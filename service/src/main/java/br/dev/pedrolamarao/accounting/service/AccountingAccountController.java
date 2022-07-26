@@ -9,7 +9,7 @@ import io.micronaut.http.server.util.HttpHostResolver;
 
 import java.net.URI;
 
-@Controller
+@Controller("/accounts")
 public class AccountingAccountController
 {
     private final AccountingAccountService accounts;
@@ -22,7 +22,7 @@ public class AccountingAccountController
         this.hostResolver = hostResolver;
     }
 
-    @Post("/accounts")
+    @Post
     public Stored<AccountingAccount> createAccount (HttpRequest<?> request, AccountingAccount account)
     {
         final long id = accounts.create(account);
@@ -32,14 +32,14 @@ public class AccountingAccountController
         );
     }
 
-    @Get("/accounts/{accountId}")
+    @Get("/{accountId}")
     public void deleteAccount (HttpRequest<?> request, @PathVariable String accountId)
     {
         final long id = Long.parseLong(accountId);
         accounts.delete(id);
     }
 
-    @Get("/accounts")
+    @Get
     public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
     {
         final var list = accounts.list(page).stream()
@@ -58,7 +58,7 @@ public class AccountingAccountController
         );
     }
 
-    @Get("/accounts/{accountId}")
+    @Get("/{accountId}")
     public Stored<AccountingAccount> retrieveAccount(HttpRequest<?> request, @PathVariable String accountId)
     {
         final long id = Long.parseLong(accountId);
@@ -68,7 +68,7 @@ public class AccountingAccountController
         );
     }
 
-    @Put("/accounts/{accountId}")
+    @Put("/{accountId}")
     public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable String accountId, AccountingAccount account)
     {
         final long id = Long.parseLong(accountId);
