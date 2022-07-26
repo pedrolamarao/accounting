@@ -1,0 +1,6 @@
+applicationType: function
+defaultPackage: br.dev.pedrolamarao.accounting
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle_kotlin
+features: [annotation-api, app-name, google-cloud-function, gradle, jackson-databind, java, junit, logback, micronaut-build, readme, shade, yaml]
