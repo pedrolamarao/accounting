@@ -4,66 +4,78 @@ package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import io.micronaut.http.HttpRequest;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.server.util.HttpHostResolver;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 public class AccountingAccountController
 {
-    private final HashMap<Long,Stored<AccountingAccount>> accounts = new HashMap<>();
+    private final AccountingAccountService accounts;
 
-    private final AtomicInteger counter = new AtomicInteger();
+    private final HttpHostResolver hostResolver;
 
-    private final HttpHostResolver httpHostResolver;
-
-    public AccountingAccountController (HttpHostResolver httpHostResolver)
+    public AccountingAccountController (AccountingAccountService accounts, HttpHostResolver hostResolver)
     {
-        this.httpHostResolver = httpHostResolver;
-    }
-
-
-    @Get("/accounts")
-    public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
-    {
-        final var base = httpHostResolver.resolve(request) + "/accounts";
-        final var current = URI.create("%s?page=%s".formatted(base,page));
-        final var values = new ArrayList<>(accounts.values());
-        return new Paged<>(current,null,null,values);
+        this.accounts = accounts;
+        this.hostResolver = hostResolver;
     }
 
     @Post("/accounts")
     public Stored<AccountingAccount> createAccount (HttpRequest<?> request, AccountingAccount account)
     {
-        final long id = counter.getAndIncrement();
-        final var uri = httpHostResolver.resolve(request) + "/accounts/" + id;
-        final var stored = new Stored<>(URI.create(uri),account);
-        accounts.put(id,stored);
-        return stored;
+        final long id = accounts.create(account);
+        return new Stored<>(
+            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
+            account
+        );
     }
 
     @Get("/accounts/{accountId}")
-    public Stored<AccountingAccount> getAccount (HttpRequest<?> request, @PathVariable String accountId)
+    public void deleteAccount (HttpRequest<?> request, @PathVariable String accountId)
     {
         final long id = Long.parseLong(accountId);
-        final var account = accounts.get(id);
-        if (account == null) throw new HttpStatusException(HttpStatus.NOT_FOUND,"");
-        else return account;
+        accounts.delete(id);
+    }
+
+    @Get("/accounts")
+    public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
+    {
+        final var list = accounts.list(page).stream()
+                .map(it ->
+                    new Stored<>(
+                        URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
+                        it.value()
+                    )
+                )
+                .toList();
+        return new Paged<>(
+            URI.create( hostResolver.resolve(request) + "/accounts?page=" + page ),
+            null,
+            null,
+            list
+        );
+    }
+
+    @Get("/accounts/{accountId}")
+    public Stored<AccountingAccount> retrieveAccount(HttpRequest<?> request, @PathVariable String accountId)
+    {
+        final long id = Long.parseLong(accountId);
+        return new Stored<>(
+            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
+            accounts.retrieve(id)
+        );
     }
 
     @Put("/accounts/{accountId}")
     public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable String accountId, AccountingAccount account)
     {
         final long id = Long.parseLong(accountId);
-        final var uri = httpHostResolver.resolve(request) + "/accounts/" + id;
-        final var stored = new Stored<>(URI.create(uri),account);
-        accounts.put(id,stored);
-        return stored;
+        accounts.update(id,account);
+        return new Stored<>(
+            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
+            account
+        );
     }
 }
