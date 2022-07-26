@@ -25,18 +25,17 @@ public class AccountingAccountController
     @Post
     public Stored<AccountingAccount> createAccount (HttpRequest<?> request, AccountingAccount account)
     {
-        final long id = accounts.create(account);
+        final long accountId = accounts.create(account);
         return new Stored<>(
-            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
+            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
             account
         );
     }
 
     @Get("/{accountId}")
-    public void deleteAccount (HttpRequest<?> request, @PathVariable String accountId)
+    public void deleteAccount (HttpRequest<?> request, @PathVariable long accountId)
     {
-        final long id = Long.parseLong(accountId);
-        accounts.delete(id);
+        accounts.delete(accountId);
     }
 
     @Get
@@ -59,22 +58,20 @@ public class AccountingAccountController
     }
 
     @Get("/{accountId}")
-    public Stored<AccountingAccount> retrieveAccount(HttpRequest<?> request, @PathVariable String accountId)
+    public Stored<AccountingAccount> retrieveAccount (HttpRequest<?> request, @PathVariable long accountId)
     {
-        final long id = Long.parseLong(accountId);
         return new Stored<>(
-            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
-            accounts.retrieve(id)
+            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
+            accounts.retrieve(accountId)
         );
     }
 
     @Put("/{accountId}")
-    public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable String accountId, AccountingAccount account)
+    public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable long accountId, AccountingAccount account)
     {
-        final long id = Long.parseLong(accountId);
-        accounts.update(id,account);
+        accounts.update(accountId,account);
         return new Stored<>(
-            URI.create( hostResolver.resolve(request) + "/accounts/" + id ),
+            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
             account
         );
     }
