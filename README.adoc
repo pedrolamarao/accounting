@@ -1,0 +1,4 @@
+= Pêu Accounting
+:author: Pedro Lamarão <pedro.lamarao@prodist.com.br>
+
+Cloud-based double-entry accounting system for the masses.
