@@ -1,6 +1,6 @@
 plugins {
-    id("io.micronaut.application") version "3.4.1"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.micronaut.application")
+    id("com.github.johnrengelman.shadow")
 }
 
 application {
@@ -24,8 +24,4 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-validation")
-}
-
-tasks.withType<JavaCompile> {
-    options.release.set(17)
 }
