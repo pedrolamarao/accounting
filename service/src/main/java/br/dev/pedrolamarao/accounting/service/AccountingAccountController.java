@@ -3,43 +3,67 @@
 package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
-import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.Put;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.annotation.*;
+import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.http.server.util.HttpHostResolver;
 
-import java.util.Collections;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 public class AccountingAccountController
 {
+    private final HashMap<Long,Stored<AccountingAccount>> accounts = new HashMap<>();
+
     private final AtomicInteger counter = new AtomicInteger();
 
-    @Get("/accounts")
-    public List<AccountingAccount> listAccounts ()
+    private final HttpHostResolver httpHostResolver;
+
+    public AccountingAccountController (HttpHostResolver httpHostResolver)
     {
-        return Collections.emptyList();
+        this.httpHostResolver = httpHostResolver;
+    }
+
+
+    @Get("/accounts")
+    public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
+    {
+        final var base = httpHostResolver.resolve(request) + "/accounts";
+        final var current = URI.create("%s?page=%s".formatted(base,page));
+        final var values = new ArrayList<>(accounts.values());
+        return new Paged<>(current,null,null,values);
+    }
+
+    @Post("/accounts")
+    public Stored<AccountingAccount> createAccount (HttpRequest<?> request, AccountingAccount account)
+    {
+        final long id = counter.getAndIncrement();
+        final var uri = httpHostResolver.resolve(request) + "/accounts/" + id;
+        final var stored = new Stored<>(URI.create(uri),account);
+        accounts.put(id,stored);
+        return stored;
     }
 
     @Get("/accounts/{accountId}")
-    public AccountingAccount getAccount (@PathVariable String accountId)
+    public Stored<AccountingAccount> getAccount (HttpRequest<?> request, @PathVariable String accountId)
     {
-        return new AccountingAccount("description");
+        final long id = Long.parseLong(accountId);
+        final var account = accounts.get(id);
+        if (account == null) throw new HttpStatusException(HttpStatus.NOT_FOUND,"");
+        else return account;
     }
 
     @Put("/accounts/{accountId}")
-    public AccountingAccount updateAccount (@PathVariable String accountId, AccountingAccount account)
+    public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable String accountId, AccountingAccount account)
     {
-        return account;
-    }
-
-    @Get("/accounts/{accountId}/transactions")
-    public List<AccountingTransaction> listTransactions (@PathVariable String accountId)
-    {
-        return Collections.emptyList();
+        final long id = Long.parseLong(accountId);
+        final var uri = httpHostResolver.resolve(request) + "/accounts/" + id;
+        final var stored = new Stored<>(URI.create(uri),account);
+        accounts.put(id,stored);
+        return stored;
     }
 }

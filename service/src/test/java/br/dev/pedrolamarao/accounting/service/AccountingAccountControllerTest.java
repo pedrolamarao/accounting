@@ -26,27 +26,34 @@ public class AccountingAccountControllerTest
     @Test
     void listAccounts ()
     {
-        final var response = client.toBlocking().retrieve(HttpRequest.GET("/accounts"));
-        assertNotNull(response);
+        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts"),Paged.class);
+        assertNotNull(list.current());
+        assertNull(list.next());
+        assertNull(list.previous());
+        final var current = client.toBlocking().retrieve(list.current().toString(),Paged.class);
+        assertEquals(list.current(),current.current());
+    }
+
+    @Test
+    void putAccount ()
+    {
+        final var account = new AccountingAccount("description");
+        final var post = client.toBlocking().retrieve(HttpRequest.POST("/accounts",account));
+        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts"),Paged.class);
+        assertNotNull(list.current());
+        assertNull(list.next());
+        assertNull(list.previous());
+        assertEquals(1,list.values().size());
     }
 
     @Test
     void updateAccount ()
     {
-        final var account = new AccountingAccount("bar");
-        final var response = client.toBlocking().retrieve(
-            HttpRequest.PUT("/accounts/foo",account),
-            AccountingAccount.class
-        );
-        assertEquals(account,response);
-    }
-
-    @Test
-    void notFound ()
-    {
-        assertThrows(
-            HttpClientResponseException.class,
-            () -> client.toBlocking().retrieve(HttpRequest.GET("/fail"))
-        );
+        final var first = new AccountingAccount("description");
+        final var second = new AccountingAccount("DESCRIPTION");
+        final var create = client.toBlocking().retrieve(HttpRequest.POST("/accounts",first),Stored.class);
+        final var update = client.toBlocking().retrieve(HttpRequest.PUT(create.uri(),second),Stored.class);
+        assertEquals(create.uri(),update.uri());
+        assertNotEquals(create.value(),update.value());
     }
 }
