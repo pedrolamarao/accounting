@@ -24,4 +24,5 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-validation")
+    testRuntimeOnly(libs.slf4j.simple)
 }

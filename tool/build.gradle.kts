@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    this.applicationName = "accounting-tool"
+    applicationName = "accounting-tool"
     mainClass.set("br.dev.pedrolamarao.accounting.tool.AccountingTool")
 }
 
@@ -22,4 +22,5 @@ dependencies {
     implementation("info.picocli:picocli")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.picocli:micronaut-picocli")
+    runtimeOnly(libs.slf4j.simple)
 }
