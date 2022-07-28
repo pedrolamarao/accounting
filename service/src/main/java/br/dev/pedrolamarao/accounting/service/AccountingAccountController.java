@@ -32,7 +32,7 @@ public class AccountingAccountController
         );
     }
 
-    @Get("/{accountId}")
+    @Delete("/{accountId}")
     public void deleteAccount (HttpRequest<?> request, @PathVariable long accountId)
     {
         accounts.delete(accountId);
