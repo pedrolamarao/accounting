@@ -1,6 +1,7 @@
 package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
+import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +12,7 @@ public class AccountingAccountServiceTest
     @Test
     public void create ()
     {
-        final var account = new AccountingAccount("description");
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final var accounts = new AccountingAccountServiceMemory();
         final long id = accounts.create(account);
         final var list = accounts.list(0);
@@ -31,8 +32,8 @@ public class AccountingAccountServiceTest
     @Test
     public void update ()
     {
-        final var first = new AccountingAccount("description");
-        final var second = new AccountingAccount("DESCRIPTION");
+        final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
         final var accounts = new AccountingAccountServiceMemory();
         final long id = accounts.create(first);
         assertEquals(first,accounts.retrieve(id));

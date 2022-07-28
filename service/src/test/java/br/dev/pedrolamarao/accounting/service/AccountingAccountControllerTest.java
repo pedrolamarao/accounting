@@ -1,6 +1,7 @@
 package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
+import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -29,7 +30,7 @@ public class AccountingAccountControllerTest
     @Test
     void createAccount()
     {
-        final var account = new AccountingAccount("description");
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final var post = client.toBlocking().retrieve(HttpRequest.POST("/accounts",account),Stored.class);
         final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts"),PagedStored.class);
         assertNotNull(list.current());
@@ -53,11 +54,22 @@ public class AccountingAccountControllerTest
     @Test
     void updateAccount ()
     {
-        final var first = new AccountingAccount("description");
-        final var second = new AccountingAccount("DESCRIPTION");
+        final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
         final var create = client.toBlocking().retrieve(HttpRequest.POST("/accounts",first),Stored.class);
         final var update = client.toBlocking().retrieve(HttpRequest.PUT(create.uri(),second),Stored.class);
         assertEquals(create.uri(),update.uri());
         assertNotEquals(create.value(),update.value());
+    }
+
+    @Test
+    void listStatements()
+    {
+        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts/0/statements"),Paged.class);
+        assertNotNull(list.current());
+        assertNull(list.next());
+        assertNull(list.previous());
+        final var current = client.toBlocking().retrieve(list.current().toString(),Paged.class);
+        assertEquals(list.current(),current.current());
     }
 }
