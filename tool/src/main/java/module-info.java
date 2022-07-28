@@ -5,5 +5,6 @@ module br.dev.pedrolamarao.accounting.tool
     requires jakarta.inject;
     requires io.micronaut.http_client_core;
     requires io.micronaut.picocli.picocli;
+    requires io.micronaut.http;
     opens br.dev.pedrolamarao.accounting.tool to info.picocli;
 }
