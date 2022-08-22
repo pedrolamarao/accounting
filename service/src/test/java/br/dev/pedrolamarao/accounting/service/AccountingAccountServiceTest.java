@@ -14,8 +14,8 @@ public class AccountingAccountServiceTest
     {
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final var accounts = new AccountingAccountServiceMemory();
-        final long id = accounts.create(account);
-        final var list = accounts.list(0);
+        final long id = accounts.createAccount(account);
+        final var list = accounts.listAccount(0);
         assertEquals(id,list.get(0).id());
         assertEquals(account,list.get(0).value());
     }
@@ -24,7 +24,7 @@ public class AccountingAccountServiceTest
     public void list ()
     {
         final var accounts = new AccountingAccountServiceMemory();
-        final var list = accounts.list(0);
+        final var list = accounts.listAccount(0);
         assertNotNull(list);
         assertEquals(0,list.size());
     }
@@ -35,9 +35,9 @@ public class AccountingAccountServiceTest
         final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
         final var accounts = new AccountingAccountServiceMemory();
-        final long id = accounts.create(first);
-        assertEquals(first,accounts.retrieve(id));
-        accounts.update(id,second);
-        assertEquals(second,accounts.retrieve(id));
+        final long id = accounts.createAccount(first);
+        assertEquals(first,accounts.retrieveAccount(id));
+        accounts.updateAccount(id,second);
+        assertEquals(second,accounts.retrieveAccount(id));
     }
 }

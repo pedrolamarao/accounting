@@ -3,7 +3,9 @@
 package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
+import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.server.util.HttpHostResolver;
 
@@ -23,9 +25,10 @@ public class AccountingAccountController
     }
 
     @Post
+    @Status(HttpStatus.CREATED)
     public Stored<AccountingAccount> createAccount (HttpRequest<?> request, AccountingAccount account)
     {
-        final long accountId = accounts.create(account);
+        final long accountId = accounts.createAccount(account);
         return new Stored<>(
             URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
             account
@@ -35,13 +38,13 @@ public class AccountingAccountController
     @Delete("/{accountId}")
     public void deleteAccount (HttpRequest<?> request, @PathVariable long accountId)
     {
-        accounts.delete(accountId);
+        accounts.deleteAccount(accountId);
     }
 
     @Get
     public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
     {
-        final var list = accounts.list(page).stream()
+        final var list = accounts.listAccount(page).stream()
                 .map(it ->
                     new Stored<>(
                         URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
@@ -62,17 +65,78 @@ public class AccountingAccountController
     {
         return new Stored<>(
             URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
-            accounts.retrieve(accountId)
+            accounts.retrieveAccount(accountId)
         );
     }
 
     @Put("/{accountId}")
     public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable long accountId, AccountingAccount account)
     {
-        accounts.update(accountId,account);
+        accounts.updateAccount(accountId,account);
         return new Stored<>(
             URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
             account
         );
+    }
+
+    // transactions
+
+    @Post("/{accountId}/transactions")
+    public Stored<AccountingTransaction> createTransaction (HttpRequest<?> request, @PathVariable long accountId, AccountingTransaction transaction)
+    {
+        final long transactionId = accounts.createTransaction(accountId,transaction);
+        return new Stored<>(
+            transactionUri(request,accountId,transactionId),
+            transaction
+        );
+    }
+
+    @Delete("/{accountId}/transactions/{transactionId}")
+    public void deleteTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
+    {
+        accounts.deleteTransaction(accountId,transactionId);
+    }
+
+    @Get("/{accountId}/transactions")
+    public Paged<Stored<AccountingTransaction>> listTransactions (HttpRequest<?> request, @PathVariable long accountId, @QueryValue(defaultValue="0") int page)
+    {
+        final var list = accounts.listTransactions(accountId,page).stream()
+                .map(it ->
+                    new Stored<>(
+                        transactionUri(request,accountId,it.id()),
+                        it.value()
+                    )
+                )
+                .toList();
+        return new Paged<>(
+            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId + "/transactions?page=" + page ),
+            null,
+            null,
+            list
+        );
+    }
+
+    @Get("/{accountId}/transactions/{transactionId}")
+    public Stored<AccountingTransaction> retrieveTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
+    {
+        return new Stored<>(
+            transactionUri(request,accountId,transactionId),
+            accounts.retrieveTransaction(accountId,transactionId)
+        );
+    }
+
+    @Put("/{accountId}/transactions/{transactionId}")
+    public Stored<AccountingTransaction> updateTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
+    {
+        accounts.updateTransaction(accountId,transactionId,transaction);
+        return new Stored<>(
+            transactionUri(request,accountId,transactionId),
+            transaction
+        );
+    }
+
+    public URI transactionUri (HttpRequest<?> base, long accountId, long transactionId)
+    {
+        return URI.create( hostResolver.resolve(base) + "/accounts/" + accountId + "/transactions/" + transactionId );
     }
 }

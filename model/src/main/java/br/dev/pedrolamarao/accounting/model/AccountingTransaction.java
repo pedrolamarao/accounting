@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public record AccountingTransaction (
     AccountingTransactionType type,
-    LocalDate time,
+    LocalDate date,
     MonetaryQuantity moneys,
     String description
 )

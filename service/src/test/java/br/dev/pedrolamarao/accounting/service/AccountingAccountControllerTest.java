@@ -2,17 +2,19 @@ package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
-import io.micronaut.http.HttpRequest;
+import io.micronaut.core.type.Argument;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
 import java.util.List;
 
+import static io.micronaut.http.HttpRequest.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
@@ -25,51 +27,109 @@ public class AccountingAccountControllerTest
     @Client("/")
     HttpClient client;
 
-    record PagedStored <T> (URI current, URI next, URI previous, List<Stored<T>> values) { }
+    @Inject
+    AccountingAccountServiceMemory service;
 
+    @BeforeEach
+    public void rest () { service.reset(); }
+
+    @DisplayName("create,delete account")
     @Test
-    void createAccount()
+    void createDeleteAccount ()
     {
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
-        final var post = client.toBlocking().retrieve(HttpRequest.POST("/accounts",account),Stored.class);
-        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts"),PagedStored.class);
-        assertNotNull(list.current());
-        assertNull(list.next());
-        assertNull(list.previous());
-        assertEquals(1,list.values().size());
-        assertEquals(post,list.values().get(0));
+
+        final var create = client.toBlocking().exchange(
+            POST("/accounts",account),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(201,create.code());
+        assertNotNull(create.body().uri());
+        assertEquals(account,create.body().value());
+
+        final var delete = client.toBlocking().exchange(
+            DELETE(create.body().uri(),Void.class)
+        );
+        assertEquals(200,delete.code());
     }
 
+    @DisplayName("create,list account")
     @Test
-    void listAccounts ()
+    void createListAccount ()
     {
-        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts"),Paged.class);
-        assertNotNull(list.current());
-        assertNull(list.next());
-        assertNull(list.previous());
-        final var current = client.toBlocking().retrieve(list.current().toString(),Paged.class);
-        assertEquals(list.current(),current.current());
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+
+        final var create = client.toBlocking().exchange(
+            POST("/accounts",account),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(201,create.code());
+
+        final var list = client.toBlocking().exchange(
+            GET("/accounts"),
+            Argument.of(Paged.class,Argument.of(Stored.class,AccountingAccount.class))
+        );
+        assertEquals(200,list.code());
+        assertIterableEquals(List.of(create.body()),list.body().values());
     }
 
+    @DisplayName("create,retrieve account")
     @Test
-    void updateAccount ()
+    void createRetrieveAccount ()
+    {
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+
+        final var create = client.toBlocking().exchange(
+            POST("/accounts",account),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(201,create.code());
+
+        final var retrieve = client.toBlocking().exchange(
+            GET(create.body().uri()),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(200,retrieve.code());
+        assertEquals(create.body(),retrieve.body());
+    }
+
+    @DisplayName("create,update account")
+    @Test
+    void createUpdateAccount ()
     {
         final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
-        final var create = client.toBlocking().retrieve(HttpRequest.POST("/accounts",first),Stored.class);
-        final var update = client.toBlocking().retrieve(HttpRequest.PUT(create.uri(),second),Stored.class);
-        assertEquals(create.uri(),update.uri());
-        assertNotEquals(create.value(),update.value());
+
+        final var create = client.toBlocking().exchange(
+            POST("/accounts",first),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(201,create.code());
+
+        final var update = client.toBlocking().exchange(
+            PUT(create.body().uri(),second),
+            Argument.of(Stored.class,AccountingAccount.class)
+        );
+        assertEquals(200,update.code());
+        assertEquals(create.body().uri(),update.body().uri());
+        assertEquals(second,update.body().value());
     }
 
+    @DisplayName("list accounts")
     @Test
-    void listStatements()
+    void listAccounts ()
     {
-        final var list = client.toBlocking().retrieve(HttpRequest.GET("/accounts/0/statements"),Paged.class);
-        assertNotNull(list.current());
-        assertNull(list.next());
-        assertNull(list.previous());
-        final var current = client.toBlocking().retrieve(list.current().toString(),Paged.class);
-        assertEquals(list.current(),current.current());
+        final var list = client.toBlocking().exchange(
+            GET("/accounts"),
+            Argument.of(Paged.class,Argument.of(Stored.class,AccountingAccount.class))
+        );
+        assertEquals(200,list.code());
+
+        final var again = client.toBlocking().exchange(
+            GET(list.body().current()),
+            Argument.of(Paged.class,Argument.of(Stored.class,AccountingAccount.class))
+        );
+        assertEquals(200,again.code());
+        assertEquals(list.body(),again.body());
     }
 }
