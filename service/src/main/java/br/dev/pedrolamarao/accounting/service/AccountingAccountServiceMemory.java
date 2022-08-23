@@ -14,7 +14,7 @@ public class AccountingAccountServiceMemory implements AccountingAccountService
 {
     private final HashMap<Long,AccountingAccount> accounts = new HashMap<>();
 
-    private final AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger counter = new AtomicInteger(1);
 
     private final HashMap<Long,HashMap<Long,AccountingTransaction>> transactions = new HashMap<>();
 
@@ -27,9 +27,9 @@ public class AccountingAccountServiceMemory implements AccountingAccountService
     }
 
     @Override
-    public void deleteAccount (long id)
+    public AccountingAccount deleteAccount (long id)
     {
-        accounts.remove(id);
+        return accounts.remove(id);
     }
 
     @Override

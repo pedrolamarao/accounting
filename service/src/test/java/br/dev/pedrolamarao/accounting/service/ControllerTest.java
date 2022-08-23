@@ -71,7 +71,7 @@ public class ControllerTest
     {
         final var accountId = 49L;
 
-        doNothing().when(service).deleteAccount(accountId);
+        when( service.deleteAccount(accountId) ).thenReturn( null );
 
         final var response = client.toBlocking().exchange(
             DELETE("/accounts/"+accountId),

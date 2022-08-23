@@ -11,7 +11,7 @@ public interface AccountingAccountService
 
     long createAccount (AccountingAccount account);
 
-    void deleteAccount (long id);
+    AccountingAccount deleteAccount (long id);
 
     List<Listed<AccountingAccount>> listAccount (int page);
 

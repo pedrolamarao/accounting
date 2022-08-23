@@ -4,22 +4,17 @@
 
 * [x] accounts
 * [ ] transactions
+* [ ] transactions to JSON
 * [ ] transactions from CSV
 * [ ] transactions from OFX
-* [ ] service compatibility tests with configurable service provider
-* [ ] controller unit tests with mock service provider
+* [ ] reconciliation
 
-== service compatibility tests
+== service tests
 
-* [ ] create account
-* [ ] create account > get account
-* [ ] create account > list accounts
-* [ ] create account > delete account > get account
-* [ ] create account > delete account > list account
-* [ ] create account > update account > get account
-* [ ] create account > update account > list account
-* [ ] delete account
-* [ ] list accounts
+* [x] accounts
+
+* [ ] list accounts : page underflow
+* [ ] list accounts : page overflow
 
 * [ ] create account > create transaction
 * [ ] create account > create transaction > get transaction
@@ -30,21 +25,18 @@
 * [ ] create account > create transaction > update transaction > list transactions
 * [ ] create account > delete transaction
 * [ ] create account > list transactions
+* [ ] create transaction (nonexistent)
+* [ ] delete transaction (nonexistent)
+* [ ] get transaction (nonexistent)
+* [ ] list transactions (nonexistent)
+* [ ] update transaction (nonexistent)
 
-== controller unit tests
+== controller tests
 
-* [ ] create account
-* [x] create account : system failure
-* [ ] delete account
-* [x] delete account : system failure
-* [ ] get account
-* [ ] get account : nonexistent account
-* [x] get account : system failure
-* [ ] list accounts
-* [x] list accounts : system failure
-* [ ] update account
-* [ ] update account : nonexistent account
-* [x] update account : system failure
+* [x] accounts
+
+* [ ] list accounts : page underflow
+* [ ] list accounts : page overflow
 
 * [ ] create transaction
 * [ ] create transaction : nonexistent account
@@ -57,9 +49,16 @@
 * [ ] get transaction : nonexistent transaction
 * [ ] get transaction : system failure
 * [ ] list transactions
+* [ ] list transactions : page
+* [ ] list transactions : page underflow
+* [ ] list transactions : page overflow
 * [ ] list transactions : nonexistent account
 * [ ] list transactions : system failure
 * [ ] update transaction
 * [ ] update transaction : nonexistent account
 * [ ] update transaction : nonexistent transaction
 * [ ] update transaction : system failure
+
+* [ ] create transactions : CSV
+* [ ] create transactions : JSON
+* [ ] create transactions : OFX
