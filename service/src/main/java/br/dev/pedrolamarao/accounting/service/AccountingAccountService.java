@@ -17,7 +17,7 @@ public interface AccountingAccountService
 
     AccountingAccount retrieveAccount (long id);
 
-    void updateAccount (long id, AccountingAccount account);
+    AccountingAccount updateAccount (long id, AccountingAccount account);
 
     // transactions
 

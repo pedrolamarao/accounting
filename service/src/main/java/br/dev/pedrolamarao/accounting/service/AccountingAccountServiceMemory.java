@@ -18,13 +18,6 @@ public class AccountingAccountServiceMemory implements AccountingAccountService
 
     private final HashMap<Long,HashMap<Long,AccountingTransaction>> transactions = new HashMap<>();
 
-    public void reset ()
-    {
-        accounts.clear();
-        counter.set(0);
-        transactions.clear();
-    }
-
     @Override
     public long createAccount (AccountingAccount account)
     {
@@ -54,9 +47,10 @@ public class AccountingAccountServiceMemory implements AccountingAccountService
     }
 
     @Override
-    public void updateAccount (long id, AccountingAccount account)
+    public AccountingAccount updateAccount (long id, AccountingAccount account)
     {
-        accounts.put(id,account);
+        if (! accounts.containsKey(id)) return null;
+        else return accounts.put(id,account);
     }
 
     @Override

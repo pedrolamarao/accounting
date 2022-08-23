@@ -14,7 +14,8 @@ import java.nio.file.Path;
 @CommandLine.Command(
     name="accounting-tool",
     subcommands={
-        AccountingTool.Accounts.class
+        AccountingTool.Accounts.class,
+        AccountingTool.Transactions.class
     }
 )
 public class AccountingTool
@@ -99,6 +100,94 @@ public class AccountingTool
                     Files.readAllBytes(path)
                 )
             );
+            System.err.println(json);
+            return 0;
+        }
+    }
+
+    @CommandLine.Command(name="transactions")
+    public static class Transactions
+    {
+        @CommandLine.Option(names = "--account", required = true, scope = CommandLine.ScopeType.INHERIT)
+        long account;
+
+        @Client
+        @Inject
+        HttpClient http;
+
+        @CommandLine.Option(names = "--service", required = true, scope = CommandLine.ScopeType.INHERIT)
+        URI service;
+
+        @CommandLine.Command(name="create")
+        public int create (
+            @CommandLine.Option(names="--file",required=true) Path path
+        )
+            throws Exception
+        {
+            final var request = HttpRequest.POST(
+                service.resolve( "accounts/%d/transactions".formatted(account) ),
+                Files.readAllBytes(path)
+            );
+            System.err.println(request);
+            final var response = http.toBlocking().retrieve(request);
+            System.err.println(response);
+            return 0;
+        }
+
+        @CommandLine.Command(name="delete")
+        public int delete (
+            @CommandLine.Option(names="--id",required=true) long id
+        )
+        {
+            final var request = HttpRequest.DELETE(
+                service.resolve( "accounts/%d/transactions/%d".formatted(account,id)),
+                null
+            );
+            System.err.println(request);
+            final var response = http.toBlocking().exchange(request);
+            System.out.println(response);
+            return 0;
+        }
+
+        @CommandLine.Command(name="list")
+        public int list ()
+        {
+            final var request = HttpRequest.GET(
+                service.resolve( "/accounts/%d/transactions".formatted(account) )
+            );
+            System.err.println(request);
+            final var response = http.toBlocking().retrieve(request);
+            System.out.println(response);
+            return 0;
+        }
+
+        @CommandLine.Command(name="retrieve")
+        public int retrieve (
+            @CommandLine.Option(names="--id",required=true) long id
+        )
+        {
+            final var request = HttpRequest.GET(
+                service.resolve( "accounts/%d/transactions/%d".formatted(account,id) )
+            );
+            System.err.println(request);
+            final var response = http.toBlocking().retrieve(request);
+            System.err.println(response);
+            return 0;
+        }
+
+        @CommandLine.Command(name="update")
+        public int update (
+            @CommandLine.Option(names="--file",required=true) Path path,
+            @CommandLine.Option(names="--id",required=true) long id
+        )
+            throws Exception
+        {
+            final var request = HttpRequest.PUT(
+                service.resolve("accounts").resolve(""+account).resolve("transactions").resolve(""+id),
+                Files.readAllBytes(path)
+            );
+            System.err.println(request);
+            final var json = http.toBlocking().retrieve(request);
             System.err.println(json);
             return 0;
         }

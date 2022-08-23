@@ -7,9 +7,12 @@ import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.server.util.HttpHostResolver;
 
 import java.net.URI;
+
+import static io.micronaut.http.HttpStatus.NOT_FOUND;
 
 @Controller("/accounts")
 public class AccountingAccountController
@@ -36,7 +39,7 @@ public class AccountingAccountController
     }
 
     @Delete("/{accountId}")
-    public void deleteAccount (HttpRequest<?> request, @PathVariable long accountId)
+    public void deleteAccount (@PathVariable long accountId)
     {
         accounts.deleteAccount(accountId);
     }
@@ -63,16 +66,16 @@ public class AccountingAccountController
     @Get("/{accountId}")
     public Stored<AccountingAccount> retrieveAccount (HttpRequest<?> request, @PathVariable long accountId)
     {
-        return new Stored<>(
-            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
-            accounts.retrieveAccount(accountId)
-        );
+        final var account = accounts.retrieveAccount(accountId);
+        if (account == null) throw new HttpStatusException(NOT_FOUND,"");
+        return new Stored<>( URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ), account );
     }
 
     @Put("/{accountId}")
     public Stored<AccountingAccount> updateAccount (HttpRequest<?> request, @PathVariable long accountId, AccountingAccount account)
     {
-        accounts.updateAccount(accountId,account);
+        final var previous = accounts.updateAccount(accountId,account);
+        if (previous == null) throw new HttpStatusException(NOT_FOUND,"");
         return new Stored<>(
             URI.create( hostResolver.resolve(request) + "/accounts/" + accountId ),
             account
