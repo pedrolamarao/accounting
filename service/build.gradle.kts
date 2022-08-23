@@ -24,5 +24,6 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut:micronaut-validation")
-    testRuntimeOnly(libs.slf4j.simple)
+    implementation("org.mockito:mockito-core:4.7.0")
+    runtimeOnly(libs.slf4j.simple)
 }
