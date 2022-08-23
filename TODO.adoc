@@ -8,13 +8,17 @@
 * [ ] transactions from CSV
 * [ ] transactions from OFX
 * [ ] reconciliation
+* [ ] tool account
+* [ ] tool account transaction
+* [ ] tool account reconciliation
 
 == service tests
 
 * [x] accounts
 
-* [ ] list accounts : page underflow
-* [ ] list accounts : page overflow
+* [ ] create account > list accounts : page
+* [ ] create account > list accounts : page underflow
+* [ ] create account > list accounts : page overflow
 
 * [ ] create account > create transaction
 * [ ] create account > create transaction > get transaction
@@ -25,6 +29,9 @@
 * [ ] create account > create transaction > update transaction > list transactions
 * [ ] create account > delete transaction
 * [ ] create account > list transactions
+* [ ] create account > list transactions : page
+* [ ] create account > list transactions : page underflow
+* [ ] create account > list transactions : page overflow
 * [ ] create transaction (nonexistent)
 * [ ] delete transaction (nonexistent)
 * [ ] get transaction (nonexistent)
