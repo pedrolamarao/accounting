@@ -54,10 +54,11 @@ public class AccountingAccountServiceMemory implements AccountingAccountService
     }
 
     @Override
-    public long createTransaction (long account, AccountingTransaction transaction)
+    public long createTransaction (long accountId, AccountingTransaction transaction)
     {
+        if (! accounts.containsKey(accountId)) return 0;
         final long id = counter.incrementAndGet();
-        transactions.computeIfAbsent(account,(__) -> new HashMap<>()).put(id,transaction);
+        transactions.computeIfAbsent(accountId,(__) -> new HashMap<>()).put(id,transaction);
         return id;
     }
 

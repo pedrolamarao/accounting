@@ -20,23 +20,25 @@
 * [ ] create account > list accounts : page underflow
 * [ ] create account > list accounts : page overflow
 
-* [ ] create account > create transaction
-* [ ] create account > create transaction > get transaction
+* [x] create account > create transaction
+* [x] create account > create transaction > get transaction
 * [ ] create account > create transaction > list transactions
-* [ ] create account > create transaction > delete transaction > get transaction
+* [x] create account > create transaction > delete transaction > get transaction
 * [ ] create account > create transaction > update transaction > list transactions
-* [ ] create account > create transaction > update transaction > get transaction
+* [x] create account > create transaction > update transaction > get transaction
 * [ ] create account > create transaction > update transaction > list transactions
-* [ ] create account > delete transaction
+* [x] create account > delete transaction (transaction nonexistent)
+* [x] create account > get transaction (transaction nonexistent)
 * [ ] create account > list transactions
 * [ ] create account > list transactions : page
 * [ ] create account > list transactions : page underflow
 * [ ] create account > list transactions : page overflow
-* [ ] create transaction (nonexistent)
-* [ ] delete transaction (nonexistent)
-* [ ] get transaction (nonexistent)
-* [ ] list transactions (nonexistent)
-* [ ] update transaction (nonexistent)
+* [x] create account > update transaction (transaction nonexistent)
+* [x] create transaction (account nonexistent)
+* [x] delete transaction (account nonexistent)
+* [x] get transaction (account nonexistent)
+* [x] list transactions (account nonexistent)
+* [x] update transaction (account nonexistent)
 
 == controller tests
 

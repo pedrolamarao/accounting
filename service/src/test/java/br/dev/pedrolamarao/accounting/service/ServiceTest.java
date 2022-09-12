@@ -2,15 +2,21 @@ package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
+import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
+import br.dev.pedrolamarao.accounting.model.MonetaryQuantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static br.dev.pedrolamarao.accounting.model.AccountingTransactionType.CREDIT;
+import static java.time.LocalDate.now;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ServiceTest
 {
     public abstract AccountingAccountService service();
+
+    // accounts
 
     @DisplayName("create account")
     @Test
@@ -200,5 +206,169 @@ public abstract class ServiceTest
         accounts.updateAccount(accountId,account);
         final var list = accounts.listAccount(0);
         assertIterableEquals(emptyList(),list);
+    }
+
+    // transactions
+
+    @DisplayName("create account > create transaction")
+    @Test
+    public void createAccountThenCreateTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final long transactionId = service.createTransaction(accountId,transaction);
+        assertNotEquals(0,transactionId);
+    }
+
+    @DisplayName("create account > create transaction > get transaction")
+    @Test
+    public void createAccountThenCreateTransactionThenGetTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final long transactionId = service.createTransaction(accountId,transaction);
+        final var current = service.retrieveTransaction(accountId,transactionId);
+        assertEquals(transaction,current);
+    }
+
+    @DisplayName("create account > create transaction > delete transaction")
+    @Test
+    public void createAccountThenCreateTransactionThenDeleteTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final long transactionId = service.createTransaction(accountId,transaction);
+        final var previous = service.deleteTransaction(accountId,transactionId);
+        assertEquals(transaction,previous);
+    }
+
+    @DisplayName("create account > create transaction > delete transaction > get transaction")
+    @Test
+    public void createAccountThenCreateTransactionThenDeleteTransactionThenGetTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final long transactionId = service.createTransaction(accountId,transaction);
+        service.deleteTransaction(accountId,transactionId);
+        final var current = service.retrieveTransaction(accountId,transactionId);
+        assertNull(current);
+    }
+
+    @DisplayName("create account > create transaction > update transaction")
+    @Test
+    public void createAccountThenCreateTransactionThenUpdateTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction0 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(0),"0");
+        final long transactionId = service.createTransaction(accountId,transaction0);
+        final var transaction1 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(1),"1");
+        final var previous = service.updateTransaction(accountId,transactionId,transaction1);
+        assertEquals(transaction0,previous);
+    }
+
+    @DisplayName("create account > create transaction > update transaction > get transaction")
+    @Test
+    public void createAccountThenCreateTransactionThenUpdateTransactionThenGetTransaction ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction0 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(0),"0");
+        final long transactionId = service.createTransaction(accountId,transaction0);
+        final var transaction1 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(1),"1");
+        service.updateTransaction(accountId,transactionId,transaction1);
+        final var current = service.retrieveTransaction(accountId,transactionId);
+        assertEquals(transaction1,current);
+    }
+
+    @DisplayName("create transaction (account nonexistent)")
+    @Test
+    public void createTransactionButAccountNonexistent ()
+    {
+        final var service = service();
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final long transactionId = service.createTransaction(999,transaction);
+        assertEquals(0,transactionId);
+    }
+
+    @DisplayName("create account > delete transaction")
+    @Test
+    public void createAccountThenDeleteTransactionButNonexistent ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final long accountId = service.createAccount(account);
+        final var transaction = service.deleteTransaction(accountId,0);
+        assertNull(transaction);
+    }
+
+    @DisplayName("delete transaction (account nonexistent)")
+    @Test
+    public void deleteTransactionButAccountNonexistent ()
+    {
+        final var service = service();
+        final var transaction = service.deleteTransaction(0,0);
+        assertNull(transaction);
+    }
+
+    @DisplayName("get transaction (account nonexistent)")
+    @Test
+    public void getTransactionButAccountNonexistent ()
+    {
+        final var service = service();
+        final var transaction = service.retrieveTransaction(0,0);
+        assertNull(transaction);
+    }
+
+    @DisplayName("create account > get transaction (transaction nonexistent)")
+    @Test
+    public void createAccountThenGetTransactionButNonexistent ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"");
+        final var accountId = service.createAccount(account);
+        final var transaction = service.retrieveTransaction(accountId,0);
+        assertNull(transaction);
+    }
+
+    @DisplayName("list transactions (account nonexistent)")
+    @Test
+    public void listTransactionsButAccountNonexistent ()
+    {
+        final var service = service();
+        final var transactions = service.listTransactions(0,0);
+        assertIterableEquals(emptyList(),transactions);
+    }
+
+    @DisplayName("update transaction (account nonexistent)")
+    @Test
+    public void updateTransactionsButAccountNonexistent ()
+    {
+        final var service = service();
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var previous = service.updateTransaction(0,0,transaction);
+        assertNull(previous);
+    }
+
+    @DisplayName("create account > update transaction (transaction nonexistent)")
+    @Test
+    public void createAccountThenUpdateTransactionButNonexistent ()
+    {
+        final var service = service();
+        final var account = new AccountingAccount(AccountingAccountType.ASSET,"");
+        final var accountId = service.createAccount(account);
+        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var previous = service.updateTransaction(accountId,0,transaction);
+        assertNull(previous);
     }
 }
