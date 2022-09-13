@@ -51,6 +51,6 @@ public class CsvTransactionReader implements AccountingTransactionReader
         final var moneys = MonetaryQuantity.parse( list.get( model.amountColumn() ), model.thousandSeparator(), model.centSeparator() );
         final var type = (moneys.quantity() < 0) ? AccountingTransactionType.DEBIT : AccountingTransactionType.CREDIT;
 
-        return new AccountingTransaction(type,LocalDate.now(),moneys,"");
+        return new AccountingTransaction(type,LocalDate.now(),moneys.quantity(),"");
     }
 }

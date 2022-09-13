@@ -3,7 +3,6 @@ package br.dev.pedrolamarao.accounting.service;
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
 import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
-import br.dev.pedrolamarao.accounting.model.MonetaryQuantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -217,7 +216,7 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final long transactionId = service.createTransaction(accountId,transaction);
         assertNotEquals(0,transactionId);
     }
@@ -229,7 +228,7 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final long transactionId = service.createTransaction(accountId,transaction);
         final var current = service.retrieveTransaction(accountId,transactionId);
         assertEquals(transaction,current);
@@ -242,7 +241,7 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final long transactionId = service.createTransaction(accountId,transaction);
         final var previous = service.deleteTransaction(accountId,transactionId);
         assertEquals(transaction,previous);
@@ -255,7 +254,7 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final long transactionId = service.createTransaction(accountId,transaction);
         service.deleteTransaction(accountId,transactionId);
         final var current = service.retrieveTransaction(accountId,transactionId);
@@ -269,9 +268,9 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(0),"0");
+        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"0");
         final long transactionId = service.createTransaction(accountId,transaction0);
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(1),"1");
+        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"1");
         final var previous = service.updateTransaction(accountId,transactionId,transaction1);
         assertEquals(transaction0,previous);
     }
@@ -283,9 +282,9 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
         final long accountId = service.createAccount(account);
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(0),"0");
+        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"0");
         final long transactionId = service.createTransaction(accountId,transaction0);
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),new MonetaryQuantity(1),"1");
+        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"1");
         service.updateTransaction(accountId,transactionId,transaction1);
         final var current = service.retrieveTransaction(accountId,transactionId);
         assertEquals(transaction1,current);
@@ -296,7 +295,7 @@ public abstract class ServiceTest
     public void createTransactionButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final long transactionId = service.createTransaction(999,transaction);
         assertEquals(0,transactionId);
     }
@@ -355,7 +354,7 @@ public abstract class ServiceTest
     public void updateTransactionsButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final var previous = service.updateTransaction(0,0,transaction);
         assertNull(previous);
     }
@@ -367,7 +366,7 @@ public abstract class ServiceTest
         final var service = service();
         final var account = new AccountingAccount(AccountingAccountType.ASSET,"");
         final var accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),new MonetaryQuantity(0),"");
+        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
         final var previous = service.updateTransaction(accountId,0,transaction);
         assertNull(previous);
     }

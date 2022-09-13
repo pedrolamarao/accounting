@@ -22,7 +22,7 @@ public class CsvTransactionReaderTest
             final var transaction = reader.read();
             assertNotNull(transaction);
             assertEquals(AccountingTransactionType.DEBIT,transaction.type());
-            assertEquals(-2440,transaction.moneys().quantity());
+            assertEquals(-2440,transaction.moneys());
         }
     }
 
@@ -37,7 +37,7 @@ public class CsvTransactionReaderTest
             final var transaction = reader.read();
             assertNotNull(transaction);
             assertEquals(AccountingTransactionType.CREDIT,transaction.type());
-            assertEquals(69500,transaction.moneys().quantity());
+            assertEquals(69500,transaction.moneys());
         }
     }
 }
