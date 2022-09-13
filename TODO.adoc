@@ -3,71 +3,62 @@
 :icons: font
 
 * [x] accounts
-* [ ] transactions
-* [ ] transactions to JSON
-* [ ] transactions from CSV
-* [ ] transactions from OFX
-* [ ] reconciliation
-* [ ] tool account
-* [ ] tool account transaction
-* [ ] tool account reconciliation
+* [x] transactions
+* [ ] JPA EntityManager service provider
+* [ ] problem report (account nonexistent, transaction nonexistent etc.)
+* [ ] accounts : paging
+* [ ] transactions : paging
+* [ ] statements (service, controller)
+* [ ] statements : import from CSV
+* [ ] statements : import from OFX
+* [ ] reconciliation (service, controller)
+* [ ] tool account (create, delete, get, list, update)
+* [ ] tool account transaction (create, delete, get, list, update)
+* [ ] tool account reconciliation (create, delete, get, list, update)
+* [ ] tool account statement (create, delete, get, list, update)
 
 == service tests
 
 * [x] accounts
+* [x] transactions
 
-* [ ] create account > list accounts : page
-* [ ] create account > list accounts : page underflow
-* [ ] create account > list accounts : page overflow
+=== list accounts
 
-* [x] create account > create transaction
-* [x] create account > create transaction > get transaction
-* [ ] create account > create transaction > list transactions
-* [x] create account > create transaction > delete transaction > get transaction
-* [ ] create account > create transaction > update transaction > list transactions
-* [x] create account > create transaction > update transaction > get transaction
-* [ ] create account > create transaction > update transaction > list transactions
-* [x] create account > delete transaction (transaction nonexistent)
-* [x] create account > get transaction (transaction nonexistent)
-* [ ] create account > list transactions
-* [ ] create account > list transactions : page
-* [ ] create account > list transactions : page underflow
-* [ ] create account > list transactions : page overflow
-* [x] create account > update transaction (transaction nonexistent)
-* [x] create transaction (account nonexistent)
-* [x] delete transaction (account nonexistent)
-* [x] get transaction (account nonexistent)
-* [x] list transactions (account nonexistent)
-* [x] update transaction (account nonexistent)
+* [ ] create account > list accounts : range
+* [ ] create account > list accounts : underflow
+* [ ] create account > list accounts : overflow
+
+=== list transactions
+
+* [ ] create account > list transactions : range
+* [ ] create account > list transactions : underflow
+* [ ] create account > list transactions : overflow
 
 == controller tests
 
 * [x] accounts
+* [x] transactions
 
-* [ ] list accounts : page underflow
-* [ ] list accounts : page overflow
+=== problem reports
 
-* [ ] create transaction
+* [ ] delete account : nonexistent account
+* [ ] update account : nonexistent account
 * [ ] create transaction : nonexistent account
-* [ ] create transaction : system failure
-* [ ] delete transaction
 * [ ] delete transaction : nonexistent account
-* [ ] delete transaction : system failure
-* [ ] get transaction
 * [ ] get transaction : nonexistent account
 * [ ] get transaction : nonexistent transaction
-* [ ] get transaction : system failure
-* [ ] list transactions
-* [ ] list transactions : page
-* [ ] list transactions : page underflow
-* [ ] list transactions : page overflow
 * [ ] list transactions : nonexistent account
-* [ ] list transactions : system failure
-* [ ] update transaction
 * [ ] update transaction : nonexistent account
 * [ ] update transaction : nonexistent transaction
-* [ ] update transaction : system failure
 
-* [ ] create transactions : CSV
-* [ ] create transactions : JSON
-* [ ] create transactions : OFX
+=== list accounts
+
+* [ ] list accounts : range
+* [ ] list accounts : underflow
+* [ ] list accounts : overflow
+
+=== list transactions
+
+* [ ] list transactions : range
+* [ ] list transactions : underflow
+* [ ] list transactions : overflow

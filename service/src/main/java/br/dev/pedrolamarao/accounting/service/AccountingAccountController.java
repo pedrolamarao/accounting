@@ -85,6 +85,7 @@ public class AccountingAccountController
     // transactions
 
     @Post("/{accountId}/transactions")
+    @Status(HttpStatus.CREATED)
     public Stored<AccountingTransaction> createTransaction (HttpRequest<?> request, @PathVariable long accountId, AccountingTransaction transaction)
     {
         final long transactionId = accounts.createTransaction(accountId,transaction);

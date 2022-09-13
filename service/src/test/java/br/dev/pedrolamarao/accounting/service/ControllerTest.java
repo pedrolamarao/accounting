@@ -2,6 +2,7 @@ package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
+import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static br.dev.pedrolamarao.accounting.model.AccountingTransactionType.CREDIT;
 import static io.micronaut.http.HttpRequest.*;
 import static io.micronaut.http.HttpStatus.*;
+import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -29,6 +32,8 @@ public class ControllerTest
 
     @Inject
     AccountingAccountService service;
+
+    // accounts
 
     @DisplayName("create account")
     @Test
@@ -254,6 +259,214 @@ public class ControllerTest
         );
         assertEquals( NOT_FOUND, thrown.getStatus() );
     }
+
+    // transactions
+
+    @DisplayName("create transaction")
+    @Test
+    public void createTransaction ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        when( service.createTransaction(accountId,transaction) ).thenReturn( transactionId );
+
+        final var response = client.toBlocking().exchange(
+            POST("/accounts/"+accountId+"/transactions",transaction),
+            Argument.of(Stored.class,AccountingTransaction.class)
+        );
+        assertEquals( CREATED, response.getStatus() );
+        assertEquals( transaction, response.body().value() );
+    }
+
+    @DisplayName("create transaction : failure")
+    @Test
+    public void createTransactionFailure ()
+    {
+        final var accountId = 31L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        doThrow( RuntimeException.class ).when(service).createTransaction(accountId,transaction);
+
+        final var thrown = assertThrows(
+            HttpClientResponseException.class,
+            () -> client.toBlocking().exchange(
+                POST("/accounts/"+accountId+"/transactions",transaction),
+                Argument.of(Stored.class,AccountingTransaction.class)
+            )
+        );
+        assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
+    }
+
+    @DisplayName("delete transaction")
+    @Test
+    public void deleteTransaction ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        when( service.deleteTransaction(accountId,transactionId) ).thenReturn( transaction );
+
+        final var response = client.toBlocking().exchange(
+            DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
+            Void.class
+        );
+        assertEquals( OK, response.getStatus() );
+    }
+
+    @DisplayName("delete transaction : failure")
+    @Test
+    public void deleteTransactionFailure ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+
+        doThrow( RuntimeException.class).when(service).deleteTransaction(accountId,transactionId);
+        final var thrown = assertThrows(
+            HttpClientResponseException.class,
+            () -> client.toBlocking().exchange(
+                DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
+                Void.class
+            )
+        );
+        assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
+    }
+
+    @DisplayName("get transaction")
+    @Test
+    public void getTransaction ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        when( service.retrieveTransaction(accountId,transactionId) ).thenReturn( transaction );
+
+        final var response = client.toBlocking().exchange(
+            GET("/accounts/"+accountId+"/transactions/"+transactionId),
+            Argument.of(Stored.class,AccountingTransaction.class)
+        );
+        assertEquals( OK, response.getStatus() );
+        assertEquals( transaction, response.body().value() );
+    }
+
+    @DisplayName("get transaction : failure")
+    @Test
+    public void getTransactionFailure ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+
+        doThrow( RuntimeException.class).when(service).retrieveTransaction(accountId,transactionId);
+
+        final var thrown = assertThrows(
+            HttpClientResponseException.class,
+            () -> client.toBlocking().exchange(
+                GET("/accounts/"+accountId+"/transactions/"+transactionId),
+                Argument.of(Stored.class,AccountingTransaction.class)
+            )
+        );
+        assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
+    }
+
+    @DisplayName("list transactions")
+    @Test
+    public void listTransactions ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        when( service.listTransactions(accountId,0) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+
+        final var response = client.toBlocking().exchange(
+            GET("/accounts/"+accountId+"/transactions"),
+            Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+        );
+        assertEquals( OK, response.getStatus() );
+        assertEquals( transaction, ((Stored<?>) response.body().values().get(0)).value() );
+    }
+
+    @DisplayName("list transactions : page")
+    @Test
+    public void listTransactionsPage ()
+    {
+        final var accountId = 31L;
+        final var page = 27;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+
+        when( service.listTransactions(accountId,page) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+
+        final var response = client.toBlocking().exchange(
+            GET("/accounts/"+accountId+"/transactions?page="+page),
+            Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+        );
+        assertEquals( OK, response.getStatus() );
+        assertEquals( transaction, ((Stored<?>) response.body().values().get(0)).value() );
+    }
+
+    @DisplayName("list transactions : failure")
+    @Test
+    public void listTransactionsFailure ()
+    {
+        final var accountId = 31L;
+        final var page = 27;
+
+        doThrow( RuntimeException.class ).when( service ).listTransactions(accountId,page);
+
+        final var thrown = assertThrows(
+            HttpClientResponseException.class,
+            () -> client.toBlocking().exchange(
+                GET("/accounts/"+accountId+"/transactions?page="+page),
+                Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+            )
+        );
+        assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
+    }
+
+    @DisplayName("update transaction")
+    @Test
+    public void updateTransaction ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"description");
+
+        when( service.updateTransaction(accountId,transactionId,transaction1) ).thenReturn( transaction0 );
+
+        final var response = client.toBlocking().exchange(
+            PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction1),
+            Argument.of(Stored.class,AccountingTransaction.class)
+        );
+        assertEquals( OK, response.getStatus() );
+        assertEquals( transaction1, response.body().value() );
+    }
+
+    @DisplayName("update transaction : failure")
+    @Test
+    public void updateTransactionFailure ()
+    {
+        final var accountId = 31L;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(CREDIT,now(),1,"description");
+
+        doThrow( RuntimeException.class).when( service ).updateTransaction(accountId,transactionId,transaction);
+
+        final var thrown = assertThrows(
+            HttpClientResponseException.class,
+            () -> client.toBlocking().exchange(
+                PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction),
+                Argument.of(Stored.class,AccountingTransaction.class)
+            )
+        );
+        assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
+    }
+
+    // support
 
     @MockBean(AccountingAccountService.class)
     public AccountingAccountService accountingAccountService ()
