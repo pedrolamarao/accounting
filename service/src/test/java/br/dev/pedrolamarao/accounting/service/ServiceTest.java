@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ServiceTest
 {
-    public abstract AccountingAccountService service();
+    public abstract AccountingService service();
 
     // accounts
 

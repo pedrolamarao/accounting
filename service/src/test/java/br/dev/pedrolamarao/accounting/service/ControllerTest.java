@@ -31,7 +31,7 @@ public class ControllerTest
     HttpClient client;
 
     @Inject
-    AccountingAccountService service;
+    AccountingService service;
 
     // accounts
 
@@ -468,9 +468,9 @@ public class ControllerTest
 
     // support
 
-    @MockBean(AccountingAccountService.class)
-    public AccountingAccountService accountingAccountService ()
+    @MockBean(AccountingService.class)
+    public AccountingService accountingAccountService ()
     {
-        return mock(AccountingAccountService.class);
+        return mock(AccountingService.class);
     }
 }

@@ -15,13 +15,13 @@ import java.net.URI;
 import static io.micronaut.http.HttpStatus.NOT_FOUND;
 
 @Controller("/accounts")
-public class AccountingAccountController
+public class AccountingController
 {
-    private final AccountingAccountService accounts;
+    private final AccountingService accounts;
 
     private final HttpHostResolver hostResolver;
 
-    public AccountingAccountController (AccountingAccountService accounts, HttpHostResolver hostResolver)
+    public AccountingController (AccountingService accounts, HttpHostResolver hostResolver)
     {
         this.accounts = accounts;
         this.hostResolver = hostResolver;

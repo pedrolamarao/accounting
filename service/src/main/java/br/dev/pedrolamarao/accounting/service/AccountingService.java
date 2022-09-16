@@ -5,7 +5,7 @@ import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 
 import java.util.List;
 
-public interface AccountingAccountService
+public interface AccountingService
 {
     // accounts
 

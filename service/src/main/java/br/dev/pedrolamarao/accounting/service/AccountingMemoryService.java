@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Singleton
-public class AccountingAccountServiceMemory implements AccountingAccountService
+public class AccountingMemoryService implements AccountingService
 {
     private final HashMap<Long,AccountingAccount> accounts = new HashMap<>();
 
