@@ -9,6 +9,8 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.server.util.HttpHostResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
@@ -21,10 +23,14 @@ public class AccountingController
 
     private final HttpHostResolver hostResolver;
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountingController.class);
+
     public AccountingController (AccountingService accounts, HttpHostResolver hostResolver)
     {
         this.accounts = accounts;
         this.hostResolver = hostResolver;
+
+        logger.info("<init>: accounts = {}, host-resolver = {}", accounts, hostResolver);
     }
 
     @Post

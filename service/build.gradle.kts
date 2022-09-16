@@ -27,6 +27,7 @@ dependencies {
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation(libs.mockito.core)
+    runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly(libs.slf4j.simple)
