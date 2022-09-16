@@ -40,7 +40,7 @@ public class ControllerTest
     public void createAccount ()
     {
         final var accountId = 49L;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         when( service.createAccount(account) ).thenReturn( accountId );
 
@@ -56,7 +56,7 @@ public class ControllerTest
     @Test
     public void createAccountFailure ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         doThrow( RuntimeException.class ).when(service).createAccount(account);
 
@@ -108,7 +108,7 @@ public class ControllerTest
     public void getAccount ()
     {
         final var accountId = 49L;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         when( service.retrieveAccount(accountId) ).thenReturn( account );
 
@@ -160,7 +160,7 @@ public class ControllerTest
     @Test
     public void listAccounts ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         when( service.listAccount(0) ).thenReturn( List.of( new Listed<>(0,account) ) );
 
@@ -176,7 +176,7 @@ public class ControllerTest
     @Test
     public void listAccountsPage ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
         final var pageId = 49;
 
         when( service.listAccount(pageId) ).thenReturn( List.of( new Listed<>(pageId,account) ) );
@@ -210,7 +210,7 @@ public class ControllerTest
     public void updateAccount ()
     {
         final long accountId = 49;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         when( service.updateAccount(accountId,account) ).thenReturn( account );
 
@@ -227,7 +227,7 @@ public class ControllerTest
     public void updateAccountsFailure ()
     {
         final long accountId = 0;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         doThrow( RuntimeException.class ).when(service).updateAccount(0,account);
 
@@ -246,7 +246,7 @@ public class ControllerTest
     public void updateAccountsNonexistent ()
     {
         final long accountId = 0;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
 
         when( service.updateAccount(accountId,account) ).thenReturn( null );
 
@@ -268,7 +268,7 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         when( service.createTransaction(accountId,transaction) ).thenReturn( transactionId );
 
@@ -285,7 +285,7 @@ public class ControllerTest
     public void createTransactionFailure ()
     {
         final var accountId = 31L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         doThrow( RuntimeException.class ).when(service).createTransaction(accountId,transaction);
 
@@ -305,7 +305,7 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         when( service.deleteTransaction(accountId,transactionId) ).thenReturn( transaction );
 
@@ -340,7 +340,7 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         when( service.retrieveTransaction(accountId,transactionId) ).thenReturn( transaction );
 
@@ -377,7 +377,7 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         when( service.listTransactions(accountId,0) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
 
@@ -396,7 +396,7 @@ public class ControllerTest
         final var accountId = 31L;
         final var page = 27;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),0,"description");
 
         when( service.listTransactions(accountId,page) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
 
@@ -433,8 +433,8 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"description");
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"description");
+        final var transaction0 = new AccountingTransaction(-1, CREDIT,now(),0,"description");
+        final var transaction1 = new AccountingTransaction(-1, CREDIT,now(),1,"description");
 
         when( service.updateTransaction(accountId,transactionId,transaction1) ).thenReturn( transaction0 );
 
@@ -452,7 +452,7 @@ public class ControllerTest
     {
         final var accountId = 31L;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),1,"description");
+        final var transaction = new AccountingTransaction(-1, CREDIT,now(),1,"description");
 
         doThrow( RuntimeException.class).when( service ).updateTransaction(accountId,transactionId,transaction);
 
