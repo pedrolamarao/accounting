@@ -6,6 +6,7 @@ import io.micronaut.context.annotation.Primary;
 import jakarta.inject.Singleton;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Primary
 @Singleton
@@ -24,31 +25,35 @@ class AccountingMicronautService implements AccountingService
     @Override
     public long createAccount (AccountingAccount account)
     {
-        return 0;
+        return accounts.save(account).id();
     }
 
     @Override
     public AccountingAccount deleteAccount (long id)
     {
-        return null;
+        final var account = accounts.findById(id);
+        accounts.deleteById(id);
+        return account.orElse(null);
     }
 
     @Override
     public List<Listed<AccountingAccount>> listAccount (int page)
     {
-        return null;
+        return StreamSupport.stream(accounts.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it)).toList();
     }
 
     @Override
     public AccountingAccount retrieveAccount (long id)
     {
-        return null;
+        return accounts.findById(id).orElse(null);
     }
 
     @Override
     public AccountingAccount updateAccount (long id, AccountingAccount account)
     {
-        return null;
+        final var previous = accounts.findById(id).orElse(null);
+        if (previous != null) accounts.update(account);
+        return previous;
     }
 
     @Override

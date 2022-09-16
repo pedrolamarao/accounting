@@ -3,6 +3,7 @@
 package br.dev.pedrolamarao.accounting.model;
 
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 
 @MappedEntity
 public record AccountingTransaction (
-    @Id long id,
+    @GeneratedValue @Id long id,
     @NonNull AccountingTransactionType type,
     @NonNull LocalDate date,
     long moneys,

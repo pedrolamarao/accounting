@@ -37,7 +37,7 @@ public abstract class ServiceTest
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         final var previous = accounts.deleteAccount(accountId);
-        assertEquals(account,previous);
+        assertEquals( account.withId(accountId), previous );
     }
 
     @DisplayName("create account > delete account > get account")
@@ -84,7 +84,7 @@ public abstract class ServiceTest
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         final var current = accounts.retrieveAccount(accountId);
-        assertEquals(account,current);
+        assertEquals( account.withId(accountId), current );
     }
 
     @DisplayName("create account > list accounts")
@@ -93,9 +93,9 @@ public abstract class ServiceTest
     {
         final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
         final var accounts = service();
-        accounts.createAccount(account);
+        final var accountId = accounts.createAccount(account);
         final var list = accounts.listAccount(0);
-        assertEquals( account, list.get(0).value() );
+        assertEquals( account.withId(accountId), list.get(0).value() );
     }
 
     @DisplayName("create account > update account")
@@ -107,7 +107,7 @@ public abstract class ServiceTest
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
         final var previous = accounts.updateAccount(accountId,second);
-        assertEquals(first,previous);
+        assertEquals( first.withId(accountId), previous );
     }
 
     @DisplayName("create account > update account > get account")
@@ -115,12 +115,12 @@ public abstract class ServiceTest
     public void createAccountThenUpdateAccountThenGetAccount ()
     {
         final var first = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
-        final var second = new AccountingAccount(-1, AccountingAccountType.ASSET,"NAME");
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
+        final var second = new AccountingAccount(accountId, AccountingAccountType.ASSET,"NAME");
         accounts.updateAccount(accountId,second);
         final var current = accounts.retrieveAccount(accountId);
-        assertEquals(second,current);
+        assertEquals( second.withId(accountId), current );
     }
 
     @DisplayName("create account > update account > list accounts")
@@ -128,12 +128,12 @@ public abstract class ServiceTest
     public void createAccountThenUpdateAccountThenListAccounts ()
     {
         final var first = new AccountingAccount(-1, AccountingAccountType.ASSET,"name");
-        final var second = new AccountingAccount(-1, AccountingAccountType.ASSET,"NAME");
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
+        final var second = new AccountingAccount(accountId, AccountingAccountType.ASSET,"NAME");
         accounts.updateAccount(accountId,second);
         final var list = accounts.listAccount(0);
-        assertEquals(second,list.get(0).value());
+        assertEquals( second.withId(accountId), list.get(0).value() );
     }
 
     @DisplayName("delete account (nonexistent)")
