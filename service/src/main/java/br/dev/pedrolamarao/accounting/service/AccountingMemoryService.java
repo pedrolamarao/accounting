@@ -33,10 +33,10 @@ public class AccountingMemoryService implements AccountingService
     }
 
     @Override
-    public List<Listed<AccountingAccount>> listAccount (int page)
+    public List<AccountingAccount> listAccount (int page)
     {
-        final var list = new ArrayList<Listed<AccountingAccount>>(accounts.size());
-        accounts.forEach((id,account) -> list.add(new Listed<>(id,account)));
+        final var list = new ArrayList<AccountingAccount>(accounts.size());
+        accounts.forEach((id,account) -> list.add(account));
         return list;
     }
 
@@ -69,11 +69,11 @@ public class AccountingMemoryService implements AccountingService
     }
 
     @Override
-    public List<Listed<AccountingTransaction>> listTransactions (long account, int page)
+    public List<AccountingTransaction> listTransactions (long account, int page)
     {
         final var map = transactions.computeIfAbsent(account,(__) -> new HashMap<>());
-        final var list = new ArrayList<Listed<AccountingTransaction>>(map.size());
-        map.forEach((id,value) -> list.add(new Listed<>(id,value)));
+        final var list = new ArrayList<AccountingTransaction>(map.size());
+        map.forEach((id,value) -> list.add(value));
         return list;
     }
 

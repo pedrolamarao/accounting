@@ -57,7 +57,7 @@ public class AccountingController
                 .map(it ->
                     new Stored<>(
                         URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
-                        it.value()
+                        it
                     )
                 )
                 .toList();
@@ -114,7 +114,7 @@ public class AccountingController
                 .map(it ->
                     new Stored<>(
                         transactionUri(request,accountId,it.id()),
-                        it.value()
+                        it
                     )
                 )
                 .toList();

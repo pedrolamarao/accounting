@@ -13,7 +13,7 @@ public interface AccountingService
 
     AccountingAccount deleteAccount (long id);
 
-    List<Listed<AccountingAccount>> listAccount (int page);
+    List<AccountingAccount> listAccount (int page);
 
     AccountingAccount retrieveAccount (long id);
 
@@ -25,7 +25,7 @@ public interface AccountingService
 
     AccountingTransaction deleteTransaction (long account, long transaction);
 
-    List<Listed<AccountingTransaction>> listTransactions (long account, int page);
+    List<AccountingTransaction> listTransactions (long account, int page);
 
     AccountingTransaction retrieveTransaction (long account, long transaction);
 

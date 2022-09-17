@@ -39,9 +39,9 @@ class AccountingMicronautService implements AccountingService
     }
 
     @Override
-    public List<Listed<AccountingAccount>> listAccount (int page)
+    public List<AccountingAccount> listAccount (int page)
     {
-        return StreamSupport.stream(accounts.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it)).toList();
+        return StreamSupport.stream(accounts.findAll().spliterator(),false).toList();
     }
 
     @Override
@@ -78,11 +78,11 @@ class AccountingMicronautService implements AccountingService
     }
 
     @Override
-    public List<Listed<AccountingTransaction>> listTransactions (long accountId, int page)
+    public List<AccountingTransaction> listTransactions (long accountId, int page)
     {
         final var account = accounts.findById(accountId).orElse(null);
         if (account == null) return emptyList();
-        return StreamSupport.stream(transactions.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it)).toList();
+        return StreamSupport.stream(transactions.findAll().spliterator(),false).toList();
     }
 
     @Override

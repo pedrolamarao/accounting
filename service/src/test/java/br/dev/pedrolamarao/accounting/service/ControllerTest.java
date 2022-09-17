@@ -162,7 +162,7 @@ public class ControllerTest
     {
         final var account = new AccountingAccount(-1, ASSET,"name");
 
-        when( service.listAccount(0) ).thenReturn( List.of( new Listed<>(0,account) ) );
+        when( service.listAccount(0) ).thenReturn( List.of( account ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"),
@@ -179,7 +179,7 @@ public class ControllerTest
         final var account = new AccountingAccount(-1, ASSET,"name");
         final var pageId = 49;
 
-        when( service.listAccount(pageId) ).thenReturn( List.of( new Listed<>(pageId,account) ) );
+        when( service.listAccount(pageId) ).thenReturn( List.of( account ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/?page=49"),
@@ -385,7 +385,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, account, CREDIT,now(),0,"transaction");
 
-        when( service.listTransactions(accountId,0) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+        when( service.listTransactions(accountId,0) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions"),
@@ -405,7 +405,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, account, CREDIT,now(),0,"transaction");
 
-        when( service.listTransactions(accountId,page) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+        when( service.listTransactions(accountId,page) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions?page="+page),

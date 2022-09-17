@@ -95,7 +95,7 @@ public abstract class ServiceTest
         final var accounts = service();
         final var accountId = accounts.createAccount(account);
         final var list = accounts.listAccount(0);
-        assertEquals( account.withId(accountId), list.get(0).value() );
+        assertEquals( account.withId(accountId), list.get(0) );
     }
 
     @DisplayName("create account > update account")
@@ -133,7 +133,7 @@ public abstract class ServiceTest
         final var second = new AccountingAccount(accountId, AccountingAccountType.ASSET,"account-2");
         accounts.updateAccount(accountId,second);
         final var list = accounts.listAccount(0);
-        assertEquals( second.withId(accountId), list.get(0).value() );
+        assertEquals( second.withId(accountId), list.get(0) );
     }
 
     @DisplayName("delete account (nonexistent)")
@@ -279,7 +279,7 @@ public abstract class ServiceTest
         final var transaction = new AccountingTransaction(-1, account.withId(accountId), CREDIT, now(),0,"transaction");
         final long transactionId = service.createTransaction(accountId, transaction);
         final var transactions = service.listTransactions(accountId,0);
-        assertIterableEquals( List.of(transaction.withId(transactionId)), transactions.stream().map(Listed::value).toList() );
+        assertIterableEquals( List.of(transaction.withId(transactionId)), transactions.stream().toList() );
     }
 
     @DisplayName("create account > create transaction > update transaction")
@@ -323,7 +323,7 @@ public abstract class ServiceTest
         final var transaction1 = new AccountingTransaction(transactionId, account.withId(accountId), CREDIT,now(),1,"1");
         service.updateTransaction(accountId,transactionId,transaction1);
         final var transactions = service.listTransactions(accountId,0);
-        assertIterableEquals( List.of(transaction1.withId(transactionId)), transactions.stream().map(Listed::value).toList() );
+        assertIterableEquals( List.of(transaction1.withId(transactionId)), transactions.stream().toList() );
     }
 
     @DisplayName("create account > delete transaction")
