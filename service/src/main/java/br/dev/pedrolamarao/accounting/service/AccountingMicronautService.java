@@ -8,6 +8,8 @@ import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import static java.util.Collections.emptyList;
+
 @Primary
 @Singleton
 class AccountingMicronautService implements AccountingService
@@ -57,32 +59,47 @@ class AccountingMicronautService implements AccountingService
     }
 
     @Override
-    public long createTransaction (long account, AccountingTransaction transaction)
+    public long createTransaction (long accountId, AccountingTransaction transaction)
     {
-        return 0;
+        final var account = accounts.findById(accountId).orElse(null);
+        if (account == null) return 0;
+        final var new_ = new AccountingTransaction(transaction.id(),account,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
+        return transactions.save(new_).id();
     }
 
     @Override
-    public AccountingTransaction deleteTransaction (long account, long transaction)
+    public AccountingTransaction deleteTransaction (long accountId, long transaction)
     {
-        return null;
+        final var account = accounts.findById(accountId).orElse(null);
+        if (account == null) return null;
+        final var previous = transactions.findById(transaction);
+        transactions.deleteById(transaction);
+        return previous.map(it -> it.withAccount(account)).orElse(null);
     }
 
     @Override
-    public List<Listed<AccountingTransaction>> listTransactions (long account, int page)
+    public List<Listed<AccountingTransaction>> listTransactions (long accountId, int page)
     {
-        return null;
+        final var account = accounts.findById(accountId).orElse(null);
+        if (account == null) return emptyList();
+        return StreamSupport.stream(transactions.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it.withAccount(account))).toList();
     }
 
     @Override
-    public AccountingTransaction retrieveTransaction (long account, long transaction)
+    public AccountingTransaction retrieveTransaction (long accountId, long transactionId)
     {
-        return null;
+        final var account = accounts.findById(accountId).orElse(null);
+        if (account == null) return null;
+        return transactions.findById(transactionId).map(it -> it.withAccount(account)).orElse(null);
     }
 
     @Override
-    public AccountingTransaction updateTransaction (long account, long transaction, AccountingTransaction value)
+    public AccountingTransaction updateTransaction (long accountId, long transactionId, AccountingTransaction value)
     {
-        return null;
+        final var account = accounts.findById(accountId).orElse(null);
+        if (account == null) return null;
+        final var previous = transactions.findById(transactionId);
+        transactions.update(value.withId(transactionId));
+        return previous.map(it -> it.withAccount(account)).orElse(null);
     }
 }
