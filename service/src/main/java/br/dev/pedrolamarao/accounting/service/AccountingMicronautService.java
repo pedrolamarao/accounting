@@ -82,7 +82,7 @@ class AccountingMicronautService implements AccountingService
     {
         final var account = accounts.findById(accountId).orElse(null);
         if (account == null) return emptyList();
-        return StreamSupport.stream(transactions.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it.withAccount(account))).toList();
+        return StreamSupport.stream(transactions.findAll().spliterator(),false).map(it -> new Listed<>(it.id(),it)).toList();
     }
 
     @Override
@@ -90,7 +90,7 @@ class AccountingMicronautService implements AccountingService
     {
         final var account = accounts.findById(accountId).orElse(null);
         if (account == null) return null;
-        return transactions.findById(transactionId).map(it -> it.withAccount(account)).orElse(null);
+        return transactions.findById(transactionId).orElse(null);
     }
 
     @Override
@@ -100,6 +100,6 @@ class AccountingMicronautService implements AccountingService
         if (account == null) return null;
         final var previous = transactions.findById(transactionId);
         transactions.update(value.withId(transactionId));
-        return previous.map(it -> it.withAccount(account)).orElse(null);
+        return previous.orElse(null);
     }
 }
