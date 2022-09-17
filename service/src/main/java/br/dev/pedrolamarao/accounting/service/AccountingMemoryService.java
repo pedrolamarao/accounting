@@ -22,7 +22,7 @@ public class AccountingMemoryService implements AccountingService
     public long createAccount (AccountingAccount account)
     {
         final long id = counter.incrementAndGet();
-        accounts.put(id,account);
+        accounts.put(id,account.withId(id));
         return id;
     }
 
@@ -58,7 +58,7 @@ public class AccountingMemoryService implements AccountingService
     {
         if (! accounts.containsKey(accountId)) return 0;
         final long id = counter.incrementAndGet();
-        transactions.computeIfAbsent(accountId,(__) -> new HashMap<>()).put(id,transaction);
+        transactions.computeIfAbsent(accountId,(__) -> new HashMap<>()).put(id,transaction.withId(id));
         return id;
     }
 

@@ -6,6 +6,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.Relation;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
@@ -13,9 +14,15 @@ import java.time.LocalDate;
 @MappedEntity
 public record AccountingTransaction (
     @GeneratedValue @Id long id,
+    @NonNull @Relation(Relation.Kind.MANY_TO_ONE) AccountingAccount account,
     @NonNull AccountingTransactionType type,
     @NonNull LocalDate date,
     long moneys,
     @NonNull @NotBlank String description
 )
-{ }
+{
+    public AccountingTransaction withId (long id)
+    {
+        return new AccountingTransaction(id,account(),type(),date(),moneys(),description());
+    }
+}
