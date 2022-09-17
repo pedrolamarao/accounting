@@ -3,7 +3,6 @@
 package br.dev.pedrolamarao.accounting.model;
 
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -17,7 +16,7 @@ import static io.micronaut.data.annotation.Relation.Kind.MANY_TO_ONE;
 @MappedEntity
 public record AccountingTransaction (
     @GeneratedValue @Id long id,
-    @Nullable @Relation(value= MANY_TO_ONE) AccountingAccount account,
+    @NonNull @Relation(value=MANY_TO_ONE) AccountingAccount account,
     @NonNull AccountingTransactionType type,
     @NonNull LocalDate date,
     long moneys,
