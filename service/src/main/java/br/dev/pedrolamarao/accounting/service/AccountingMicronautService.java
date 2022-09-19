@@ -63,7 +63,7 @@ class AccountingMicronautService implements AccountingService
     {
         final var account = accounts.findById(accountId).orElse(null);
         if (account == null) return 0;
-        final var new_ = new AccountingTransaction(transaction.id(),account,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
+        final var new_ = new AccountingTransaction(transaction.id(),accountId,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
         return transactions.save(new_).id();
     }
 
@@ -74,7 +74,7 @@ class AccountingMicronautService implements AccountingService
         if (account == null) return null;
         final var previous = transactions.findById(transaction);
         transactions.deleteById(transaction);
-        return previous.map(it -> it.withAccount(account)).orElse(null);
+        return previous.orElse(null);
     }
 
     @Override
