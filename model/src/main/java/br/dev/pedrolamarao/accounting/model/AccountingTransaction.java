@@ -2,12 +2,25 @@
 
 package br.dev.pedrolamarao.accounting.model;
 
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedEntity;
+
 import java.time.LocalDate;
 
+@MappedEntity
 public record AccountingTransaction (
-    AccountingTransactionType type,
-    LocalDate date,
+    @GeneratedValue @Id long id,
+    @NonNull long account,
+    @NonNull AccountingTransactionType type,
+    @NonNull LocalDate date,
     long moneys,
-    String description
+    @NonNull String description
 )
-{ }
+{
+    public AccountingTransaction withId (long id)
+    {
+        return new AccountingTransaction(id,account(),type(),date(),moneys(),description());
+    }
+}

@@ -1,7 +1,6 @@
 package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
-import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
 import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.client.HttpClient;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static br.dev.pedrolamarao.accounting.model.AccountingAccountType.ASSET;
 import static br.dev.pedrolamarao.accounting.model.AccountingTransactionType.CREDIT;
 import static io.micronaut.http.HttpRequest.*;
 import static io.micronaut.http.HttpStatus.*;
@@ -31,7 +31,7 @@ public class ControllerTest
     HttpClient client;
 
     @Inject
-    AccountingAccountService service;
+    AccountingService service;
 
     // accounts
 
@@ -40,7 +40,7 @@ public class ControllerTest
     public void createAccount ()
     {
         final var accountId = 49L;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         when( service.createAccount(account) ).thenReturn( accountId );
 
@@ -56,7 +56,7 @@ public class ControllerTest
     @Test
     public void createAccountFailure ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         doThrow( RuntimeException.class ).when(service).createAccount(account);
 
@@ -108,7 +108,7 @@ public class ControllerTest
     public void getAccount ()
     {
         final var accountId = 49L;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         when( service.retrieveAccount(accountId) ).thenReturn( account );
 
@@ -160,9 +160,9 @@ public class ControllerTest
     @Test
     public void listAccounts ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
-        when( service.listAccount(0) ).thenReturn( List.of( new Listed<>(0,account) ) );
+        when( service.listAccount(0) ).thenReturn( List.of( account ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"),
@@ -176,10 +176,10 @@ public class ControllerTest
     @Test
     public void listAccountsPage ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
         final var pageId = 49;
 
-        when( service.listAccount(pageId) ).thenReturn( List.of( new Listed<>(pageId,account) ) );
+        when( service.listAccount(pageId) ).thenReturn( List.of( account ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/?page=49"),
@@ -210,7 +210,7 @@ public class ControllerTest
     public void updateAccount ()
     {
         final long accountId = 49;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         when( service.updateAccount(accountId,account) ).thenReturn( account );
 
@@ -227,7 +227,7 @@ public class ControllerTest
     public void updateAccountsFailure ()
     {
         final long accountId = 0;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         doThrow( RuntimeException.class ).when(service).updateAccount(0,account);
 
@@ -246,7 +246,7 @@ public class ControllerTest
     public void updateAccountsNonexistent ()
     {
         final long accountId = 0;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, ASSET,"name");
 
         when( service.updateAccount(accountId,account) ).thenReturn( null );
 
@@ -267,10 +267,11 @@ public class ControllerTest
     public void createTransaction ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.createTransaction(accountId,transaction) ).thenReturn( transactionId );
+        when( service.createTransaction(transaction) ).thenReturn( transactionId );
 
         final var response = client.toBlocking().exchange(
             POST("/accounts/"+accountId+"/transactions",transaction),
@@ -285,9 +286,11 @@ public class ControllerTest
     public void createTransactionFailure ()
     {
         final var accountId = 31L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var account = new AccountingAccount(accountId, ASSET,"account");
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        doThrow( RuntimeException.class ).when(service).createTransaction(accountId,transaction);
+        doThrow( RuntimeException.class ).when(service).createTransaction(transaction);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,
@@ -304,10 +307,11 @@ public class ControllerTest
     public void deleteTransaction ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.deleteTransaction(accountId,transactionId) ).thenReturn( transaction );
+        when( service.deleteTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
             DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
@@ -323,7 +327,7 @@ public class ControllerTest
         final var accountId = 31L;
         final var transactionId = 49L;
 
-        doThrow( RuntimeException.class).when(service).deleteTransaction(accountId,transactionId);
+        doThrow( RuntimeException.class).when(service).deleteTransaction(transactionId);
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
@@ -339,10 +343,11 @@ public class ControllerTest
     public void getTransaction ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.retrieveTransaction(accountId,transactionId) ).thenReturn( transaction );
+        when( service.retrieveTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions/"+transactionId),
@@ -359,7 +364,7 @@ public class ControllerTest
         final var accountId = 31L;
         final var transactionId = 49L;
 
-        doThrow( RuntimeException.class).when(service).retrieveTransaction(accountId,transactionId);
+        doThrow( RuntimeException.class).when(service).retrieveTransaction(transactionId);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,
@@ -376,10 +381,11 @@ public class ControllerTest
     public void listTransactions ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.listTransactions(accountId,0) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+        when( service.listTransactions(accountId,0) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions"),
@@ -394,11 +400,12 @@ public class ControllerTest
     public void listTransactionsPage ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var page = 27;
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),0,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.listTransactions(accountId,page) ).thenReturn( List.of( new Listed<>(transactionId,transaction) ) );
+        when( service.listTransactions(accountId,page) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions?page="+page),
@@ -413,7 +420,10 @@ public class ControllerTest
     public void listTransactionsFailure ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var page = 27;
+        final var transactionId = 49L;
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
         doThrow( RuntimeException.class ).when( service ).listTransactions(accountId,page);
 
@@ -432,11 +442,12 @@ public class ControllerTest
     public void updateTransaction ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"description");
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"description");
+        final var transaction0 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"description");
+        final var transaction1 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),1,"description");
 
-        when( service.updateTransaction(accountId,transactionId,transaction1) ).thenReturn( transaction0 );
+        when( service.updateTransaction(transaction1) ).thenReturn( transaction0 );
 
         final var response = client.toBlocking().exchange(
             PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction1),
@@ -451,10 +462,11 @@ public class ControllerTest
     public void updateTransactionFailure ()
     {
         final var accountId = 31L;
+        final var account = new AccountingAccount(accountId, ASSET,"account");
         final var transactionId = 49L;
-        final var transaction = new AccountingTransaction(CREDIT,now(),1,"description");
+        final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        doThrow( RuntimeException.class).when( service ).updateTransaction(accountId,transactionId,transaction);
+        doThrow( RuntimeException.class).when( service ).updateTransaction(transaction);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,
@@ -468,9 +480,9 @@ public class ControllerTest
 
     // support
 
-    @MockBean(AccountingAccountService.class)
-    public AccountingAccountService accountingAccountService ()
+    @MockBean(AccountingService.class)
+    public AccountingService accountingAccountService ()
     {
-        return mock(AccountingAccountService.class);
+        return mock(AccountingService.class);
     }
 }

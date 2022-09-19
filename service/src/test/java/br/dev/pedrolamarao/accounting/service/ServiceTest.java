@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ServiceTest
 {
-    public abstract AccountingAccountService service();
+    public abstract AccountingService service();
 
     // accounts
 
@@ -23,7 +23,7 @@ public abstract class ServiceTest
     @Test
     public void createAccount ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         assertNotEquals(0,accountId);
@@ -33,18 +33,18 @@ public abstract class ServiceTest
     @Test
     public void createAccountThenDeleteAccount ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         final var previous = accounts.deleteAccount(accountId);
-        assertEquals(account,previous);
+        assertEquals( account.withId(accountId), previous );
     }
 
     @DisplayName("create account > delete account > get account")
     @Test
     public void createAccountThenDeleteAccountThenGetAccount ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         accounts.deleteAccount(accountId);
@@ -56,7 +56,7 @@ public abstract class ServiceTest
     @Test
     public void createAccountThenDeleteAccountThenListAccounts ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         accounts.deleteAccount(accountId);
@@ -68,7 +68,7 @@ public abstract class ServiceTest
     @Test
     public void createAccountThenDeleteAccountThenUpdateAccount ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         accounts.deleteAccount(accountId);
@@ -80,68 +80,60 @@ public abstract class ServiceTest
     @Test
     public void createAccountThenGetAccount ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(account);
         final var current = accounts.retrieveAccount(accountId);
-        assertEquals(account,current);
-    }
-    {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
-        final var accounts = service();
-        final long accountId = accounts.createAccount(account);
-        accounts.deleteAccount(accountId);
-        final var current = accounts.retrieveAccount(accountId);
-        assertNull(current);
+        assertEquals( account.withId(accountId), current );
     }
 
     @DisplayName("create account > list accounts")
     @Test
     public void createAccountThenListAccounts ()
     {
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
-        accounts.createAccount(account);
+        final var accountId = accounts.createAccount(account);
         final var list = accounts.listAccount(0);
-        assertEquals( account, list.get(0).value() );
+        assertEquals( account.withId(accountId), list.get(0) );
     }
 
     @DisplayName("create account > update account")
     @Test
     public void createAccountThenUpdateAccount ()
     {
-        final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
-        final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
+        final var first = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
+        final var second = new AccountingAccount(-1, AccountingAccountType.ASSET,"account-2");
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
         final var previous = accounts.updateAccount(accountId,second);
-        assertEquals(first,previous);
+        assertEquals( first.withId(accountId), previous );
     }
 
     @DisplayName("create account > update account > get account")
     @Test
     public void createAccountThenUpdateAccountThenGetAccount ()
     {
-        final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
-        final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
+        final var first = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
+        final var second = new AccountingAccount(accountId, AccountingAccountType.ASSET,"account-2");
         accounts.updateAccount(accountId,second);
         final var current = accounts.retrieveAccount(accountId);
-        assertEquals(second,current);
+        assertEquals( second.withId(accountId), current );
     }
 
     @DisplayName("create account > update account > list accounts")
     @Test
     public void createAccountThenUpdateAccountThenListAccounts ()
     {
-        final var first = new AccountingAccount(AccountingAccountType.ASSET,"name");
-        final var second = new AccountingAccount(AccountingAccountType.ASSET,"NAME");
+        final var first = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final long accountId = accounts.createAccount(first);
+        final var second = new AccountingAccount(accountId, AccountingAccountType.ASSET,"account-2");
         accounts.updateAccount(accountId,second);
         final var list = accounts.listAccount(0);
-        assertEquals(second,list.get(0).value());
+        assertEquals( second.withId(accountId), list.get(0) );
     }
 
     @DisplayName("delete account (nonexistent)")
@@ -178,7 +170,7 @@ public abstract class ServiceTest
     public void updateAccountNonexistent ()
     {
         final long accountId = 49;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final var previous = accounts.updateAccount(accountId,account);
         assertNull(previous);
@@ -189,7 +181,7 @@ public abstract class ServiceTest
     public void updateAccountNonexistentThenGetAccount ()
     {
         final long accountId = 49;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         final var previous = accounts.updateAccount(accountId,account);
         assertNull(previous);
@@ -202,7 +194,7 @@ public abstract class ServiceTest
     public void updateAccountNonexistentThenListAccount ()
     {
         final long accountId = 49;
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accounts = service();
         accounts.updateAccount(accountId,account);
         final var list = accounts.listAccount(0);
@@ -216,10 +208,10 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(accountId,transaction);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
         assertNotEquals(0,transactionId);
     }
 
@@ -228,12 +220,12 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenDeleteTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(accountId,transaction);
-        final var previous = service.deleteTransaction(accountId,transactionId);
-        assertEquals(transaction,previous);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
+        final var previous = service.deleteTransaction(transactionId);
+        assertEquals( transaction.withId(transactionId), previous );
     }
 
     @DisplayName("create account > create transaction > delete transaction > get transaction")
@@ -241,12 +233,12 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenDeleteTransactionThenGetTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(accountId,transaction);
-        service.deleteTransaction(accountId,transactionId);
-        final var current = service.retrieveTransaction(accountId,transactionId);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
+        service.deleteTransaction(transactionId);
+        final var current = service.retrieveTransaction(transactionId);
         assertNull(current);
     }
 
@@ -255,11 +247,11 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenDeleteTransactionThenListTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(accountId,transaction);
-        service.deleteTransaction(accountId,transactionId);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
+        service.deleteTransaction(transactionId);
         final var transactions = service.listTransactions(accountId,0);
         assertIterableEquals(emptyList(),transactions);
     }
@@ -269,12 +261,12 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenGetTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(accountId,transaction);
-        final var current = service.retrieveTransaction(accountId,transactionId);
-        assertEquals(transaction,current);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
+        final var current = service.retrieveTransaction(transactionId);
+        assertEquals( transaction.withId(transactionId), current );
     }
 
     @DisplayName("create account > create transaction > list transaction")
@@ -282,12 +274,12 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenListTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        service.createTransaction(accountId, transaction);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
         final var transactions = service.listTransactions(accountId,0);
-        assertIterableEquals(List.of(transaction),transactions.stream().map(Listed::value).toList());
+        assertIterableEquals( List.of(transaction.withId(transactionId)), transactions.stream().toList() );
     }
 
     @DisplayName("create account > create transaction > update transaction")
@@ -295,13 +287,13 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenUpdateTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"0");
-        final long transactionId = service.createTransaction(accountId,transaction0);
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"1");
-        final var previous = service.updateTransaction(accountId,transactionId,transaction1);
-        assertEquals(transaction0,previous);
+        final var transaction0 = new AccountingTransaction(-1, accountId, CREDIT,now(),0,"0");
+        final long transactionId = service.createTransaction(transaction0);
+        final var transaction1 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),1,"1");
+        final var previous = service.updateTransaction(transaction1);
+        assertEquals( transaction0.withId(transactionId), previous );
     }
 
     @DisplayName("create account > create transaction > update transaction > get transaction")
@@ -309,14 +301,14 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenUpdateTransactionThenGetTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"0");
-        final long transactionId = service.createTransaction(accountId,transaction0);
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"1");
-        service.updateTransaction(accountId,transactionId,transaction1);
-        final var current = service.retrieveTransaction(accountId,transactionId);
-        assertEquals(transaction1,current);
+        final var transaction0 = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"0");
+        final long transactionId = service.createTransaction(transaction0);
+        final var transaction1 = new AccountingTransaction(transactionId, accountId, CREDIT, now(),1,"1");
+        service.updateTransaction(transaction1);
+        final var current = service.retrieveTransaction(transactionId);
+        assertEquals( transaction1.withId(transactionId), current );
     }
 
     @DisplayName("create account > create transaction > update transaction > list transaction")
@@ -324,14 +316,14 @@ public abstract class ServiceTest
     public void createAccountThenCreateTransactionThenUpdateTransactionThenListTransaction ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction0 = new AccountingTransaction(CREDIT,now(),0,"0");
-        final long transactionId = service.createTransaction(accountId,transaction0);
-        final var transaction1 = new AccountingTransaction(CREDIT,now(),1,"1");
-        service.updateTransaction(accountId,transactionId,transaction1);
+        final var transaction0 = new AccountingTransaction(-1, accountId, CREDIT,now(),0,"0");
+        final long transactionId = service.createTransaction(transaction0);
+        final var transaction1 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),1,"1");
+        service.updateTransaction(transaction1);
         final var transactions = service.listTransactions(accountId,0);
-        assertIterableEquals(List.of(transaction1),transactions.stream().map(Listed::value).toList());
+        assertIterableEquals( List.of(transaction1.withId(transactionId)), transactions.stream().toList() );
     }
 
     @DisplayName("create account > delete transaction")
@@ -339,9 +331,9 @@ public abstract class ServiceTest
     public void createAccountThenDeleteTransactionButNonexistent ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
-        final var transaction = service.deleteTransaction(accountId,0);
+        final var transaction = service.deleteTransaction(0);
         assertNull(transaction);
     }
 
@@ -350,9 +342,9 @@ public abstract class ServiceTest
     public void createAccountThenGetTransactionButNonexistent ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accountId = service.createAccount(account);
-        final var transaction = service.retrieveTransaction(accountId,0);
+        final var transaction = service.retrieveTransaction(0);
         assertNull(transaction);
     }
 
@@ -361,7 +353,7 @@ public abstract class ServiceTest
     public void createAccountThenListTransactions ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"name");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final long accountId = service.createAccount(account);
         final var transactions = service.listTransactions(accountId,0);
         assertIterableEquals(emptyList(),transactions);
@@ -372,10 +364,10 @@ public abstract class ServiceTest
     public void createAccountThenUpdateTransactionButNonexistent ()
     {
         final var service = service();
-        final var account = new AccountingAccount(AccountingAccountType.ASSET,"");
+        final var account = new AccountingAccount(-1, AccountingAccountType.ASSET,"account");
         final var accountId = service.createAccount(account);
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final var previous = service.updateTransaction(accountId,0,transaction);
+        final var transaction = new AccountingTransaction(-1, accountId, CREDIT, now(),0,"transaction");
+        final var previous = service.updateTransaction(transaction);
         assertNull(previous);
     }
 
@@ -384,8 +376,9 @@ public abstract class ServiceTest
     public void createTransactionButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final long transactionId = service.createTransaction(999,transaction);
+        final var account = new AccountingAccount(999, AccountingAccountType.ASSET,"account");
+        final var transaction = new AccountingTransaction(-1, 999, CREDIT, now(),0,"transaction");
+        final long transactionId = service.createTransaction(transaction);
         assertEquals(0,transactionId);
     }
 
@@ -394,7 +387,7 @@ public abstract class ServiceTest
     public void deleteTransactionButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = service.deleteTransaction(0,0);
+        final var transaction = service.deleteTransaction(0);
         assertNull(transaction);
     }
 
@@ -403,7 +396,7 @@ public abstract class ServiceTest
     public void getTransactionButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = service.retrieveTransaction(0,0);
+        final var transaction = service.retrieveTransaction(0);
         assertNull(transaction);
     }
 
@@ -421,8 +414,9 @@ public abstract class ServiceTest
     public void updateTransactionsButAccountNonexistent ()
     {
         final var service = service();
-        final var transaction = new AccountingTransaction(CREDIT, now(),0,"");
-        final var previous = service.updateTransaction(0,0,transaction);
+        final var account = new AccountingAccount(0, AccountingAccountType.ASSET,"account");
+        final var transaction = new AccountingTransaction(-1, 0, CREDIT, now(),0,"transaction");
+        final var previous = service.updateTransaction(transaction);
         assertNull(previous);
     }
 }

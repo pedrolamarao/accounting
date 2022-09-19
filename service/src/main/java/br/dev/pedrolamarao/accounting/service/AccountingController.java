@@ -9,22 +9,28 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.server.util.HttpHostResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
 import static io.micronaut.http.HttpStatus.NOT_FOUND;
 
 @Controller("/accounts")
-public class AccountingAccountController
+public class AccountingController
 {
-    private final AccountingAccountService accounts;
+    private final AccountingService accounts;
 
     private final HttpHostResolver hostResolver;
 
-    public AccountingAccountController (AccountingAccountService accounts, HttpHostResolver hostResolver)
+    private static final Logger logger = LoggerFactory.getLogger(AccountingController.class);
+
+    public AccountingController (AccountingService accounts, HttpHostResolver hostResolver)
     {
         this.accounts = accounts;
         this.hostResolver = hostResolver;
+
+        logger.info("<init>: accounts = {}, host-resolver = {}", accounts, hostResolver);
     }
 
     @Post
@@ -51,7 +57,7 @@ public class AccountingAccountController
                 .map(it ->
                     new Stored<>(
                         URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
-                        it.value()
+                        it
                     )
                 )
                 .toList();
@@ -88,7 +94,8 @@ public class AccountingAccountController
     @Status(HttpStatus.CREATED)
     public Stored<AccountingTransaction> createTransaction (HttpRequest<?> request, @PathVariable long accountId, AccountingTransaction transaction)
     {
-        final long transactionId = accounts.createTransaction(accountId,transaction);
+        if (transaction.account() != accountId) throw new RuntimeException("oops");
+        final long transactionId = accounts.createTransaction(transaction);
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
             transaction
@@ -98,7 +105,8 @@ public class AccountingAccountController
     @Delete("/{accountId}/transactions/{transactionId}")
     public void deleteTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
     {
-        accounts.deleteTransaction(accountId,transactionId);
+        // #TODO: validate accountId?
+        accounts.deleteTransaction(transactionId);
     }
 
     @Get("/{accountId}/transactions")
@@ -108,7 +116,7 @@ public class AccountingAccountController
                 .map(it ->
                     new Stored<>(
                         transactionUri(request,accountId,it.id()),
-                        it.value()
+                        it
                     )
                 )
                 .toList();
@@ -125,14 +133,15 @@ public class AccountingAccountController
     {
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
-            accounts.retrieveTransaction(accountId,transactionId)
+            accounts.retrieveTransaction(transactionId)
         );
     }
 
     @Put("/{accountId}/transactions/{transactionId}")
     public Stored<AccountingTransaction> updateTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
     {
-        accounts.updateTransaction(accountId,transactionId,transaction);
+        // #TODO: validate accountId?
+        accounts.updateTransaction(transaction);
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
             transaction

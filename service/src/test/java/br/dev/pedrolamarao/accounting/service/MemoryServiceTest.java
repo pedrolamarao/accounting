@@ -3,8 +3,8 @@ package br.dev.pedrolamarao.accounting.service;
 public class MemoryServiceTest extends ServiceTest
 {
     @Override
-    public AccountingAccountService service ()
+    public AccountingService service ()
     {
-        return new AccountingAccountServiceMemory();
+        return new AccountingMemoryService();
     }
 }

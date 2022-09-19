@@ -4,7 +4,7 @@
 
 * [x] accounts
 * [x] transactions
-* [ ] JPA EntityManager service provider
+* [x] Micronaut Data service provider
 * [ ] problem report (account nonexistent, transaction nonexistent etc.)
 * [ ] accounts : paging
 * [ ] transactions : paging
