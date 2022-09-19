@@ -16,7 +16,7 @@ public class AccountingMemoryService implements AccountingService
 
     private final AtomicInteger counter = new AtomicInteger(1);
 
-    private final HashMap<Long,HashMap<Long,AccountingTransaction>> transactions = new HashMap<>();
+    private final HashMap<Long,AccountingTransaction> transactions = new HashMap<>();
 
     @Override
     public long createAccount (AccountingAccount account)
@@ -54,38 +54,38 @@ public class AccountingMemoryService implements AccountingService
     }
 
     @Override
-    public long createTransaction (long accountId, AccountingTransaction transaction)
+    public long createTransaction ( AccountingTransaction transaction)
     {
+        final long accountId = transaction.account();
         if (! accounts.containsKey(accountId)) return 0;
-        final long id = counter.incrementAndGet();
-        transactions.computeIfAbsent(accountId,(__) -> new HashMap<>()).put(id,transaction.withId(id));
-        return id;
+        final long transactionId = counter.incrementAndGet();
+        final var new_ = transaction.withId(transactionId);
+        transactions.put(transactionId,new_);
+        return transactionId;
     }
 
     @Override
-    public AccountingTransaction deleteTransaction (long account, long transaction)
+    public AccountingTransaction deleteTransaction (long transaction)
     {
-        return transactions.computeIfAbsent(account,(__) -> new HashMap<>()).remove(transaction);
+        return transactions.remove(transaction);
     }
 
     @Override
     public List<AccountingTransaction> listTransactions (long account, int page)
     {
-        final var map = transactions.computeIfAbsent(account,(__) -> new HashMap<>());
-        final var list = new ArrayList<AccountingTransaction>(map.size());
-        map.forEach((id,value) -> list.add(value));
-        return list;
+        return transactions.values().stream().filter(it -> it.account() == account).toList();
     }
 
     @Override
-    public AccountingTransaction retrieveTransaction (long account, long transaction)
+    public AccountingTransaction retrieveTransaction (long transaction)
     {
-        return transactions.computeIfAbsent(account,(__) -> new HashMap<>()).get(transaction);
+        return transactions.get(transaction);
     }
 
     @Override
-    public AccountingTransaction updateTransaction (long account, long transaction, AccountingTransaction value)
+    public AccountingTransaction updateTransaction (AccountingTransaction value)
     {
-        return transactions.computeIfAbsent(account,(__) -> new HashMap<>()).put(transaction,value);
+        if (!transactions.containsKey(value.id())) return null;
+        return transactions.put(value.id(),value);
     }
 }

@@ -59,19 +59,15 @@ class AccountingMicronautService implements AccountingService
     }
 
     @Override
-    public long createTransaction (long accountId, AccountingTransaction transaction)
+    public long createTransaction (AccountingTransaction transaction)
     {
-        final var account = accounts.findById(accountId).orElse(null);
-        if (account == null) return 0;
-        final var new_ = new AccountingTransaction(transaction.id(),accountId,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
-        return transactions.save(new_).id();
+        if (! accounts.existsById(transaction.account())) return 0;
+        return transactions.save(transaction).id();
     }
 
     @Override
-    public AccountingTransaction deleteTransaction (long accountId, long transaction)
+    public AccountingTransaction deleteTransaction (long transaction)
     {
-        final var account = accounts.findById(accountId).orElse(null);
-        if (account == null) return null;
         final var previous = transactions.findById(transaction);
         transactions.deleteById(transaction);
         return previous.orElse(null);
@@ -86,20 +82,16 @@ class AccountingMicronautService implements AccountingService
     }
 
     @Override
-    public AccountingTransaction retrieveTransaction (long accountId, long transactionId)
+    public AccountingTransaction retrieveTransaction (long transactionId)
     {
-        final var account = accounts.findById(accountId).orElse(null);
-        if (account == null) return null;
         return transactions.findById(transactionId).orElse(null);
     }
 
     @Override
-    public AccountingTransaction updateTransaction (long accountId, long transactionId, AccountingTransaction value)
+    public AccountingTransaction updateTransaction (AccountingTransaction value)
     {
-        final var account = accounts.findById(accountId).orElse(null);
-        if (account == null) return null;
-        final var previous = transactions.findById(transactionId);
-        transactions.update(value.withId(transactionId));
+        final var previous = transactions.findById(value.id());
+        transactions.update(value);
         return previous.orElse(null);
     }
 }

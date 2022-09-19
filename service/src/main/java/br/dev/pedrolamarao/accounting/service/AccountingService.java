@@ -21,13 +21,13 @@ public interface AccountingService
 
     // transactions
 
-    long createTransaction (long account, AccountingTransaction transaction);
+    long createTransaction (AccountingTransaction transaction);
 
-    AccountingTransaction deleteTransaction (long account, long transaction);
+    AccountingTransaction deleteTransaction (long transaction);
 
     List<AccountingTransaction> listTransactions (long account, int page);
 
-    AccountingTransaction retrieveTransaction (long account, long transaction);
+    AccountingTransaction retrieveTransaction (long transaction);
 
-    AccountingTransaction updateTransaction (long account, long transaction, AccountingTransaction value);
+    AccountingTransaction updateTransaction (AccountingTransaction value);
 }

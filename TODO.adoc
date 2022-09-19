@@ -7,7 +7,7 @@
 * [ ] Micronaut Data service provider
   - [x] basic modeling
   - [x] remove Listed<>
-  - [ ] update service interface for new modeling
+  - [x] update service interface for new modeling
   - [ ] move model classes back to model module
 * [ ] problem report (account nonexistent, transaction nonexistent etc.)
 * [ ] accounts : paging

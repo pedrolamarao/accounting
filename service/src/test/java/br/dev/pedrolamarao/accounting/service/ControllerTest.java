@@ -271,7 +271,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.createTransaction(accountId,transaction) ).thenReturn( transactionId );
+        when( service.createTransaction(transaction) ).thenReturn( transactionId );
 
         final var response = client.toBlocking().exchange(
             POST("/accounts/"+accountId+"/transactions",transaction),
@@ -290,7 +290,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        doThrow( RuntimeException.class ).when(service).createTransaction(accountId,transaction);
+        doThrow( RuntimeException.class ).when(service).createTransaction(transaction);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,
@@ -311,7 +311,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.deleteTransaction(accountId,transactionId) ).thenReturn( transaction );
+        when( service.deleteTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
             DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
@@ -327,7 +327,7 @@ public class ControllerTest
         final var accountId = 31L;
         final var transactionId = 49L;
 
-        doThrow( RuntimeException.class).when(service).deleteTransaction(accountId,transactionId);
+        doThrow( RuntimeException.class).when(service).deleteTransaction(transactionId);
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
@@ -347,7 +347,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        when( service.retrieveTransaction(accountId,transactionId) ).thenReturn( transaction );
+        when( service.retrieveTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions/"+transactionId),
@@ -364,7 +364,7 @@ public class ControllerTest
         final var accountId = 31L;
         final var transactionId = 49L;
 
-        doThrow( RuntimeException.class).when(service).retrieveTransaction(accountId,transactionId);
+        doThrow( RuntimeException.class).when(service).retrieveTransaction(transactionId);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,
@@ -447,7 +447,7 @@ public class ControllerTest
         final var transaction0 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"description");
         final var transaction1 = new AccountingTransaction(transactionId, accountId, CREDIT,now(),1,"description");
 
-        when( service.updateTransaction(accountId,transactionId,transaction1) ).thenReturn( transaction0 );
+        when( service.updateTransaction(transaction1) ).thenReturn( transaction0 );
 
         final var response = client.toBlocking().exchange(
             PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction1),
@@ -466,7 +466,7 @@ public class ControllerTest
         final var transactionId = 49L;
         final var transaction = new AccountingTransaction(transactionId, accountId, CREDIT,now(),0,"transaction");
 
-        doThrow( RuntimeException.class).when( service ).updateTransaction(accountId,transactionId,transaction);
+        doThrow( RuntimeException.class).when( service ).updateTransaction(transaction);
 
         final var thrown = assertThrows(
             HttpClientResponseException.class,

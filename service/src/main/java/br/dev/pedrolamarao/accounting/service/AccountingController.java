@@ -94,7 +94,8 @@ public class AccountingController
     @Status(HttpStatus.CREATED)
     public Stored<AccountingTransaction> createTransaction (HttpRequest<?> request, @PathVariable long accountId, AccountingTransaction transaction)
     {
-        final long transactionId = accounts.createTransaction(accountId,transaction);
+        if (transaction.account() != accountId) throw new RuntimeException("oops");
+        final long transactionId = accounts.createTransaction(transaction);
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
             transaction
@@ -104,7 +105,8 @@ public class AccountingController
     @Delete("/{accountId}/transactions/{transactionId}")
     public void deleteTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
     {
-        accounts.deleteTransaction(accountId,transactionId);
+        // #TODO: validate accountId?
+        accounts.deleteTransaction(transactionId);
     }
 
     @Get("/{accountId}/transactions")
@@ -131,14 +133,15 @@ public class AccountingController
     {
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
-            accounts.retrieveTransaction(accountId,transactionId)
+            accounts.retrieveTransaction(transactionId)
         );
     }
 
     @Put("/{accountId}/transactions/{transactionId}")
     public Stored<AccountingTransaction> updateTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
     {
-        accounts.updateTransaction(accountId,transactionId,transaction);
+        // #TODO: validate accountId?
+        accounts.updateTransaction(transaction);
         return new Stored<>(
             transactionUri(request,accountId,transactionId),
             transaction
