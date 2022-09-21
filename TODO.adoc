@@ -2,25 +2,39 @@
 :author: Pedro Lamarão <pedro.lamarao@gmail.com>
 :icons: font
 
+== tasks
+
 * [x] accounts
 * [x] transactions
 * [x] Micronaut Data service provider
-* [ ] problem report (account nonexistent, transaction nonexistent etc.)
-* [ ] accounts : paging
-* [ ] transactions : paging
-* [ ] statements (service, controller)
+* [ ] statements
+  - [ ] OFX
+  - [ ] test: two representations, equal content
+* [ ] query: what is account X current balance?
+  - [ ] tool accounts balance
+* [ ] reconciliation
+* [ ] problem reports
+* [ ] cloud database service provider
+
+=== correctness
+
+* [ ] JSON data set
+* [ ] Micronaut HTTP integration test suite
+* [ ] external HTTP integration test suite
+* [ ] transaction correctness test suite
+* [ ] OFX data set
+
+=== import/export
+
+* [ ] accounts : import in bulk
+* [ ] transactions : import in bulk
 * [ ] statements : import from CSV
 * [ ] statements : import from OFX
-* [ ] reconciliation (service, controller)
-* [ ] tool account (create, delete, get, list, update)
-* [ ] tool account transaction (create, delete, get, list, update)
-* [ ] tool account reconciliation (create, delete, get, list, update)
-* [ ] tool account statement (create, delete, get, list, update)
 
-== service tests
+=== paging
 
-* [x] accounts
-* [x] transactions
+* [ ] accounts : paging
+* [ ] transactions : paging
 
 === list accounts
 
@@ -33,11 +47,6 @@
 * [ ] create account > list transactions : range
 * [ ] create account > list transactions : underflow
 * [ ] create account > list transactions : overflow
-
-== controller tests
-
-* [x] accounts
-* [x] transactions
 
 === problem reports
 

@@ -1,0 +1,12 @@
+[
+    { "id": 0, "account": 0, "type": "CREDIT", "date": "2016-04-13", "moneys": "400000", "description": "Transfer in your favor" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-04-11", "moneys": "3120", "description": "Payment by card" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-04-04", "moneys": "492", "description": "Payment by card" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-04-04", "moneys": "2098", "description": "Telecom Bill" },
+    { "id": 0, "account": 0, "type": "CREDIT", "date": "2016-04-02", "moneys": "700000", "description": "Transfer in your favor" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-04-01", "moneys": "19500", "description": "Gym subscription" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-03-25", "moneys": "350000", "description": "To my uncle" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-03-24", "moneys": "2050", "description": "Payment by card" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-03-23", "moneys": "17700", "description": "Payment by card" },
+    { "id": 0, "account": 0, "type": "DEBIT", "date": "2016-03-23", "moneys": "4200", "description": "Payment by card" }
+]

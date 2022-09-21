@@ -1,3 +1,4 @@
 [libraries]
+jackson-datatype-jsr310 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4"
 mockito-core = "org.mockito:mockito-core:4.8.0"
 slf4j-simple = "org.slf4j:slf4j-simple:1.7.36"
