@@ -14,6 +14,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "accounting"
 
+include("ofx")
 include("model")
 include("service")
 include("tool")
