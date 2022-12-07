@@ -2,7 +2,7 @@ name: "ubuntu"
 on: [pull_request,workflow_dispatch]
 jobs:
   build-temurin-17:
-    name: "build with Temurin 17"
+    name: "build with Temurin 19"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -10,10 +10,10 @@ jobs:
         uses: actions/checkout@v2
       - name: "Validate Gradle Wrapper"
         uses: gradle/wrapper-validation-action@v1
-      - name: "Set up Temurin 17"
+      - name: "Set up Temurin 19"
         uses: actions/setup-java@v2
         with:
-          java-version: "17"
+          java-version: "19"
           distribution: "temurin"
       - name: "Build with Gradle"
         uses: gradle/gradle-build-action@v2.1.3
