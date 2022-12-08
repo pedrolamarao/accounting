@@ -1,5 +1,5 @@
 = Pêu Accounting
-:author: Pedro Lamarão <pedro.lamarao@prodist.com.br>
+Pedro Lamarão <pedro.lamarao@prodist.com.br>
 :icons: font
 
 Cloud-based double-entry accounting system for the masses.
