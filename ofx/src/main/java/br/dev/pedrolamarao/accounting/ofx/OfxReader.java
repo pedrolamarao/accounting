@@ -13,7 +13,7 @@ public class OfxReader
 
     private Stage stage = Stage.Fields;
 
-    OfxReader (InputStream source)
+    private OfxReader (InputStream source)
     {
         this.source = source;
     }
