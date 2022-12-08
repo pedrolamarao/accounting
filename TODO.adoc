@@ -15,7 +15,9 @@ Pedro Lamarão <pedro.lamarao@gmail.com>
  - [ ] writer
 * [ ] statements
   - [ ] from CSV
+  - [ ] from JSON
   - [ ] from OFX
+  - [ ] to JSON
 * [ ] query: what is account X current balance?
   - [ ] tool accounts balance
 * [ ] reconciliation
