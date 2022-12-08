@@ -1,5 +1,5 @@
 = TODO
-:author: Pedro Lamarão <pedro.lamarao@gmail.com>
+Pedro Lamarão <pedro.lamarao@gmail.com>
 :icons: font
 
 == tasks
@@ -7,9 +7,15 @@
 * [x] accounts
 * [x] transactions
 * [x] Micronaut Data service provider
+* [ ] OFX
+ - [ ] reader
+ - [ ] writer
+* [ ] CSV
+ - [ ] reader
+ - [ ] writer
 * [ ] statements
-  - [ ] OFX
-  - [ ] test: two representations, equal content
+  - [ ] from CSV
+  - [ ] from OFX
 * [ ] query: what is account X current balance?
   - [ ] tool accounts balance
 * [ ] reconciliation

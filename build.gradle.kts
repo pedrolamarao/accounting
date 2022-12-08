@@ -6,9 +6,8 @@ allprojects {
     group = "br.dev.pedrolamarao.accounting"
     version = "1.0-SNAPSHOT"
 
-    pluginManager.withPlugin("java-base") {
-        tasks.withType<JavaCompile> {
-            options.release.convention(19)
-        }
+    tasks.withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        options.release.convention(19)
     }
 }
