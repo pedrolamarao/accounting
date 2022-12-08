@@ -15,5 +15,6 @@ ij_visual_guides = none
 ij_wrap_on_typing = false
 
 [*.java]
+ij_java_class_brace_style = next_line
 ij_java_method_brace_style = next_line
 ij_java_space_before_method_parentheses = true
