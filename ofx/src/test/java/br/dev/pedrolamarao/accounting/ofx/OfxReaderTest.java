@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class OfxReaderTest
@@ -24,15 +24,16 @@ public class OfxReaderTest
         {
             final var reader = OfxReader.from(stream);
 
-            assertThat( reader.next(), is( new OfxField("OFXHEADER","100") ) );
-            assertThat( reader.next(), is( new OfxField("DATA","OFXSGML") ) );
-            assertThat( reader.next(), is( new OfxField("VERSION","102") ) );
-            assertThat( reader.next(), is( new OfxField("SECURITY","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("ENCODING","USASCII") ) );
-            assertThat( reader.next(), is( new OfxField("CHARSET","1252") ) );
-            assertThat( reader.next(), is( new OfxField("COMPRESSION","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("OLDFILEUID","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("NEWFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("OFXHEADER","100") ) );
+            assertThat( reader.next(), equalTo( new OfxField("DATA","OFXSGML") ) );
+            assertThat( reader.next(), equalTo( new OfxField("VERSION","102") ) );
+            assertThat( reader.next(), equalTo( new OfxField("SECURITY","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("ENCODING","USASCII") ) );
+            assertThat( reader.next(), equalTo( new OfxField("CHARSET","1252") ) );
+            assertThat( reader.next(), equalTo( new OfxField("COMPRESSION","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("OLDFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("NEWFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo(null) );
         }
     }
 
@@ -43,15 +44,16 @@ public class OfxReaderTest
         {
             final var reader = OfxReader.from(stream);
 
-            assertThat( reader.next(), is( new OfxField("OFXHEADER","100") ) );
-            assertThat( reader.next(), is( new OfxField("DATA","OFXSGML") ) );
-            assertThat( reader.next(), is( new OfxField("VERSION","102") ) );
-            assertThat( reader.next(), is( new OfxField("SECURITY","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("ENCODING","UTF-8") ) );
-            assertThat( reader.next(), is( new OfxField("CHARSET","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("COMPRESSION","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("OLDFILEUID","NONE") ) );
-            assertThat( reader.next(), is( new OfxField("NEWFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("OFXHEADER","100") ) );
+            assertThat( reader.next(), equalTo( new OfxField("DATA","OFXSGML") ) );
+            assertThat( reader.next(), equalTo( new OfxField("VERSION","102") ) );
+            assertThat( reader.next(), equalTo( new OfxField("SECURITY","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("ENCODING","UTF-8") ) );
+            assertThat( reader.next(), equalTo( new OfxField("CHARSET","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("COMPRESSION","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("OLDFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo( new OfxField("NEWFILEUID","NONE") ) );
+            assertThat( reader.next(), equalTo(null) );
         }
     }
 }

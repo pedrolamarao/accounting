@@ -9,6 +9,10 @@ public class OfxReader
 {
     private final InputStream source;
 
+    enum Stage { Fields, Markup }
+
+    private Stage stage = Stage.Fields;
+
     OfxReader (InputStream source)
     {
         this.source = source;
@@ -21,7 +25,23 @@ public class OfxReader
 
     public OfxObject next () throws Exception
     {
-        return nextField();
+        if (stage == Stage.Fields)
+        {
+            final var field = nextField();
+            if (field == null) {
+                stage = Stage.Markup;
+            }
+            // Nubank OFX defect: no separator empty line.
+            else if ("NEWFILEUID".contentEquals(field.name())) {
+                stage = Stage.Markup;
+                return field;
+            }
+            else {
+                return field;
+            }
+        }
+
+        return nextMarkup();
     }
 
     OfxField nextField () throws Exception
@@ -40,6 +60,11 @@ public class OfxReader
             new String( line, 0, marker, US_ASCII ),
             new String( line, marker + 1, line.length - (marker + 1), US_ASCII )
         );
+    }
+
+    OfxObject nextMarkup () throws Exception
+    {
+        return null;
     }
 
     byte[] nextLine () throws Exception
