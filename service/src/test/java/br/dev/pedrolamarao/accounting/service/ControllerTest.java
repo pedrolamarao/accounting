@@ -166,10 +166,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"),
-            Argument.of(Paged.class,Argument.of(Stored.class,AccountingAccount.class))
+            Argument.of(List.class,Argument.of(Stored.class,AccountingAccount.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, ((Stored<?>) response.body().values().get(0)).value() );
+        assertEquals( account, ((Stored<?>) response.body().get(0)).value() );
     }
 
     @DisplayName("list accounts : page")
@@ -183,10 +183,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/?page=49"),
-            Argument.of(Paged.class,Argument.of(Stored.class,AccountingAccount.class))
+            Argument.of(List.class,Argument.of(Stored.class,AccountingAccount.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, ((Stored<?>) response.body().values().get(0)).value() );
+        assertEquals( account, ((Stored<?>) response.body().get(0)).value() );
     }
 
     @DisplayName("list account : failure")
@@ -389,10 +389,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions"),
-            Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+            Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction, ((Stored<?>) response.body().values().get(0)).value() );
+        assertEquals( transaction, ((Stored<?>) response.body().get(0)).value() );
     }
 
     @DisplayName("list transactions : page")
@@ -409,10 +409,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions?page="+page),
-            Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+            Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction, ((Stored<?>) response.body().values().get(0)).value() );
+        assertEquals( transaction, ((Stored<?>) response.body().get(0)).value() );
     }
 
     @DisplayName("list transactions : failure")
@@ -431,7 +431,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 GET("/accounts/"+accountId+"/transactions?page="+page),
-                Argument.of(Paged.class,Argument.of(Stored.class,AccountingTransaction.class))
+                Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );

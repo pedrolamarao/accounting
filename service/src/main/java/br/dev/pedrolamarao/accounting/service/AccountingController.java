@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.List;
 
 import static io.micronaut.http.HttpStatus.NOT_FOUND;
 
@@ -51,22 +52,16 @@ public class AccountingController
     }
 
     @Get
-    public Paged<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
+    public List<Stored<AccountingAccount>> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
     {
-        final var list = accounts.listAccount(page).stream()
-                .map(it ->
-                    new Stored<>(
-                        URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
-                        it
-                    )
+        return accounts.listAccount(page).stream()
+            .map(it ->
+                new Stored<>(
+                    URI.create( hostResolver.resolve(request) + "/accounts/" + it.id()),
+                    it
                 )
-                .toList();
-        return new Paged<>(
-            URI.create( hostResolver.resolve(request) + "/accounts?page=" + page ),
-            null,
-            null,
-            list
-        );
+            )
+            .toList();
     }
 
     @Get("/{accountId}")
@@ -110,22 +105,16 @@ public class AccountingController
     }
 
     @Get("/{accountId}/transactions")
-    public Paged<Stored<AccountingTransaction>> listTransactions (HttpRequest<?> request, @PathVariable long accountId, @QueryValue(defaultValue="0") int page)
+    public List<Stored<AccountingTransaction>> listTransactions (HttpRequest<?> request, @PathVariable long accountId, @QueryValue(defaultValue="0") int page)
     {
-        final var list = accounts.listTransactions(accountId,page).stream()
-                .map(it ->
-                    new Stored<>(
-                        transactionUri(request,accountId,it.id()),
-                        it
-                    )
+        return accounts.listTransactions(accountId,page).stream()
+            .map(it ->
+                new Stored<>(
+                    transactionUri(request,accountId,it.id()),
+                    it
                 )
-                .toList();
-        return new Paged<>(
-            URI.create( hostResolver.resolve(request) + "/accounts/" + accountId + "/transactions?page=" + page ),
-            null,
-            null,
-            list
-        );
+            )
+            .toList();
     }
 
     @Get("/{accountId}/transactions/{transactionId}")
