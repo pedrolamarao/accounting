@@ -2,6 +2,8 @@
 
 package br.dev.pedrolamarao.accounting.model;
 
+import br.dev.pedrolamarao.accounting.csv.CsvModel;
+import br.dev.pedrolamarao.accounting.csv.CsvTransactionReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStreamReader;

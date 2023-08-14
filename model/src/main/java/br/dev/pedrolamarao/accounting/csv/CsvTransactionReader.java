@@ -1,13 +1,16 @@
 // Copyright (C) 2022 Pedro Lamarão <pedro.lamarao@gmail.com>. All rights reserved.
 
-package br.dev.pedrolamarao.accounting.model;
+package br.dev.pedrolamarao.accounting.csv;
+
+import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
+import br.dev.pedrolamarao.accounting.model.AccountingTransactionType;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class CsvTransactionReader implements AccountingTransactionReader
+public class CsvTransactionReader
 {
     private final CsvModel model;
 

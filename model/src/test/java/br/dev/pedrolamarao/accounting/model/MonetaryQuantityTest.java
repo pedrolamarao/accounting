@@ -2,6 +2,7 @@
 
 package br.dev.pedrolamarao.accounting.model;
 
+import br.dev.pedrolamarao.accounting.csv.MonetaryQuantity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

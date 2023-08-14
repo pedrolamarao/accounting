@@ -5,4 +5,5 @@ module br.dev.pedrolamarao.accounting.model
     requires io.micronaut.data.data_model;
     requires io.micronaut.core;
     exports br.dev.pedrolamarao.accounting.model;
+    exports br.dev.pedrolamarao.accounting.csv;
 }
