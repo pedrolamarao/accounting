@@ -46,10 +46,11 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             POST("/accounts",account),
-            Argument.of(Stored.class,AccountingAccount.class)
+            Argument.of(AccountingAccount.class)
         );
         assertEquals( CREATED, response.getStatus() );
-        assertEquals( account, response.body().value() );
+        assertEquals( account.type(), response.body().type() );
+        assertEquals( account.name(), response.body().name() );
     }
 
     @DisplayName("create account : failure")
@@ -64,7 +65,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 POST("/accounts",account),
-                Argument.of(Stored.class,AccountingAccount.class)
+                Argument.of(AccountingAccount.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -80,7 +81,7 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             DELETE("/accounts/"+accountId),
-            Argument.of(Stored.class,AccountingAccount.class)
+            Argument.of(AccountingAccount.class)
         );
         assertEquals( OK, response.getStatus() );
     }
@@ -114,10 +115,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId),
-            Argument.of(Stored.class,AccountingAccount.class)
+            Argument.of(AccountingAccount.class)
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, response.body().value() );
+        assertEquals( account, response.body() );
     }
 
     @DisplayName("get account : failure")
@@ -132,7 +133,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 GET("/accounts/"+accountId),
-                Argument.of(Stored.class,AccountingAccount.class)
+                Argument.of(AccountingAccount.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -149,8 +150,8 @@ public class ControllerTest
         final var thrown = assertThrows(
                 HttpClientResponseException.class,
                 () -> client.toBlocking().exchange(
-                        GET("/accounts/"+accountId),
-                        Argument.of(Stored.class,AccountingAccount.class)
+                    GET("/accounts/"+accountId),
+                    Argument.of(AccountingAccount.class)
                 )
         );
         assertEquals( NOT_FOUND, thrown.getStatus() );
@@ -166,10 +167,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"),
-            Argument.of(List.class,Argument.of(Stored.class,AccountingAccount.class))
+            Argument.of(List.class,Argument.of(AccountingAccount.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, ((Stored<?>) response.body().get(0)).value() );
+        assertEquals( account, response.body().get(0) );
     }
 
     @DisplayName("list accounts : page")
@@ -183,10 +184,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/?page=49"),
-            Argument.of(List.class,Argument.of(Stored.class,AccountingAccount.class))
+            Argument.of(List.class,Argument.of(AccountingAccount.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, ((Stored<?>) response.body().get(0)).value() );
+        assertEquals( account, response.body().get(0) );
     }
 
     @DisplayName("list account : failure")
@@ -199,7 +200,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 GET("/accounts/"),
-                Argument.of(Stored.class,AccountingAccount.class)
+                Argument.of(AccountingAccount.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -216,10 +217,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             PUT("/accounts/"+accountId,account),
-            Argument.of(Stored.class,AccountingAccount.class)
+            Argument.of(AccountingAccount.class)
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( account, response.body().value() );
+        assertEquals( account, response.body() );
     }
 
     @DisplayName("update account : failure")
@@ -235,7 +236,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 PUT("/accounts/"+accountId,account),
-                Argument.of(Stored.class,AccountingAccount.class)
+                Argument.of(AccountingAccount.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -254,7 +255,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 PUT("/accounts/"+accountId,account),
-                Argument.of(Stored.class,AccountingAccount.class)
+                Argument.of(AccountingAccount.class)
             )
         );
         assertEquals( NOT_FOUND, thrown.getStatus() );
@@ -275,10 +276,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             POST("/accounts/"+accountId+"/transactions",transaction),
-            Argument.of(Stored.class,AccountingTransaction.class)
+            Argument.of(AccountingTransaction.class)
         );
         assertEquals( CREATED, response.getStatus() );
-        assertEquals( transaction, response.body().value() );
+        assertEquals( transaction, response.body() );
     }
 
     @DisplayName("create transaction : failure")
@@ -296,7 +297,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 POST("/accounts/"+accountId+"/transactions",transaction),
-                Argument.of(Stored.class,AccountingTransaction.class)
+                Argument.of(AccountingTransaction.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -351,10 +352,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions/"+transactionId),
-            Argument.of(Stored.class,AccountingTransaction.class)
+            Argument.of(AccountingTransaction.class)
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction, response.body().value() );
+        assertEquals( transaction, response.body() );
     }
 
     @DisplayName("get transaction : failure")
@@ -370,7 +371,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 GET("/accounts/"+accountId+"/transactions/"+transactionId),
-                Argument.of(Stored.class,AccountingTransaction.class)
+                Argument.of(AccountingTransaction.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -389,10 +390,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions"),
-            Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
+            Argument.of(List.class,Argument.of(AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction, ((Stored<?>) response.body().get(0)).value() );
+        assertEquals( transaction, response.body().get(0) );
     }
 
     @DisplayName("list transactions : page")
@@ -409,10 +410,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             GET("/accounts/"+accountId+"/transactions?page="+page),
-            Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
+            Argument.of(List.class,Argument.of(AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction, ((Stored<?>) response.body().get(0)).value() );
+        assertEquals( transaction, response.body().get(0) );
     }
 
     @DisplayName("list transactions : failure")
@@ -431,7 +432,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 GET("/accounts/"+accountId+"/transactions?page="+page),
-                Argument.of(List.class,Argument.of(Stored.class,AccountingTransaction.class))
+                Argument.of(List.class,Argument.of(AccountingTransaction.class))
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
@@ -451,10 +452,10 @@ public class ControllerTest
 
         final var response = client.toBlocking().exchange(
             PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction1),
-            Argument.of(Stored.class,AccountingTransaction.class)
+            Argument.of(AccountingTransaction.class)
         );
         assertEquals( OK, response.getStatus() );
-        assertEquals( transaction1, response.body().value() );
+        assertEquals( transaction1, response.body() );
     }
 
     @DisplayName("update transaction : failure")
@@ -472,7 +473,7 @@ public class ControllerTest
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
                 PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction),
-                Argument.of(Stored.class,AccountingTransaction.class)
+                Argument.of(AccountingTransaction.class)
             )
         );
         assertEquals( INTERNAL_SERVER_ERROR, thrown.getStatus() );
