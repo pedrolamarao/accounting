@@ -9,7 +9,7 @@ application {
 }
 
 micronaut {
-    version.set("3.5.3")
+    version.set("3.5.7")
     testRuntime("junit5")
     processing {
         incremental(true)
