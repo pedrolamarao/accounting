@@ -32,6 +32,7 @@ dependencies {
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly(libs.slf4j.simple)
 }
-repositories {
-    mavenCentral()
+
+tasks.dockerfile.configure {
+    baseImage = "eclipse-temurin:20"
 }

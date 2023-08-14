@@ -24,3 +24,7 @@ dependencies {
     implementation("io.micronaut.picocli:micronaut-picocli")
     runtimeOnly(libs.slf4j.simple)
 }
+
+tasks.dockerfile.configure {
+    baseImage = "eclipse-temurin:20"
+}
