@@ -68,36 +68,34 @@ public class AccountingController
 
     // transactions
 
-    @Post("/accounts/{accountId}/transactions")
+    @Post("/transactions")
     @Status(HttpStatus.CREATED)
-    public AccountingTransaction createTransaction (@PathVariable long accountId, AccountingTransaction transaction)
+    public AccountingTransaction createTransaction (AccountingTransaction transaction)
     {
-        if (transaction.account() != accountId) throw new RuntimeException("oops");
         final long transactionId = accounts.createTransaction(transaction);
-        return new AccountingTransaction(transactionId,accountId,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
+        return new AccountingTransaction(transactionId,transaction.account(),transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
     }
 
-    @Delete("/accounts/{accountId}/transactions/{transactionId}")
-    public void deleteTransaction (@PathVariable long accountId, @PathVariable long transactionId)
+    @Delete("/transactions/{transactionId}")
+    public void deleteTransaction (@PathVariable long transactionId)
     {
-        // #TODO: validate accountId?
         accounts.deleteTransaction(transactionId);
     }
 
-    @Get("/accounts/{accountId}/transactions")
-    public List<AccountingTransaction> listTransactions (@PathVariable long accountId, @QueryValue(defaultValue="0") int page)
+    @Get("/transactions")
+    public List<AccountingTransaction> listTransactions (@QueryValue long account, @QueryValue(defaultValue="0") int page)
     {
-        return accounts.listTransactions(accountId,page);
+        return accounts.listTransactions(account,page);
     }
 
-    @Get("/accounts/{accountId}/transactions/{transactionId}")
-    public AccountingTransaction retrieveTransaction (@PathVariable long accountId, @PathVariable long transactionId)
+    @Get("/transactions/{transactionId}")
+    public AccountingTransaction retrieveTransaction (@PathVariable long transactionId)
     {
         return accounts.retrieveTransaction(transactionId);
     }
 
-    @Put("/accounts/{accountId}/transactions/{transactionId}")
-    public AccountingTransaction updateTransaction (@PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
+    @Put("/transactions/{transactionId}")
+    public AccountingTransaction updateTransaction (@PathVariable long transactionId, AccountingTransaction transaction)
     {
         accounts.updateTransaction(transaction);
         return transaction;

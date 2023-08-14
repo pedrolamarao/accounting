@@ -275,7 +275,7 @@ public class ControllerTest
         when( service.createTransaction(transaction) ).thenReturn( transactionId );
 
         final var response = client.toBlocking().exchange(
-            POST("/accounts/"+accountId+"/transactions",transaction),
+            POST("/transactions",transaction),
             Argument.of(AccountingTransaction.class)
         );
         assertEquals( CREATED, response.getStatus() );
@@ -296,7 +296,7 @@ public class ControllerTest
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
-                POST("/accounts/"+accountId+"/transactions",transaction),
+                POST("/transactions",transaction),
                 Argument.of(AccountingTransaction.class)
             )
         );
@@ -315,7 +315,7 @@ public class ControllerTest
         when( service.deleteTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
-            DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
+            DELETE("/transactions/"+transactionId),
             Void.class
         );
         assertEquals( OK, response.getStatus() );
@@ -332,7 +332,7 @@ public class ControllerTest
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
-                DELETE("/accounts/"+accountId+"/transactions/"+transactionId),
+                DELETE("/transactions/"+transactionId),
                 Void.class
             )
         );
@@ -351,7 +351,7 @@ public class ControllerTest
         when( service.retrieveTransaction(transactionId) ).thenReturn( transaction );
 
         final var response = client.toBlocking().exchange(
-            GET("/accounts/"+accountId+"/transactions/"+transactionId),
+            GET("/transactions/"+transactionId),
             Argument.of(AccountingTransaction.class)
         );
         assertEquals( OK, response.getStatus() );
@@ -370,7 +370,7 @@ public class ControllerTest
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
-                GET("/accounts/"+accountId+"/transactions/"+transactionId),
+                GET("/transactions/"+transactionId),
                 Argument.of(AccountingTransaction.class)
             )
         );
@@ -389,7 +389,7 @@ public class ControllerTest
         when( service.listTransactions(accountId,0) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
-            GET("/accounts/"+accountId+"/transactions"),
+            GET("/transactions?account=%s".formatted(accountId)),
             Argument.of(List.class,Argument.of(AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
@@ -409,7 +409,7 @@ public class ControllerTest
         when( service.listTransactions(accountId,page) ).thenReturn( List.of( transaction ) );
 
         final var response = client.toBlocking().exchange(
-            GET("/accounts/"+accountId+"/transactions?page="+page),
+            GET("/transactions?account=%s&page=%s".formatted(accountId,page)),
             Argument.of(List.class,Argument.of(AccountingTransaction.class))
         );
         assertEquals( OK, response.getStatus() );
@@ -431,7 +431,7 @@ public class ControllerTest
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
-                GET("/accounts/"+accountId+"/transactions?page="+page),
+                GET("/transactions?account=%s&page=%s".formatted(accountId,page)),
                 Argument.of(List.class,Argument.of(AccountingTransaction.class))
             )
         );
@@ -451,7 +451,7 @@ public class ControllerTest
         when( service.updateTransaction(transaction1) ).thenReturn( transaction0 );
 
         final var response = client.toBlocking().exchange(
-            PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction1),
+            PUT("/transactions/"+transactionId,transaction1),
             Argument.of(AccountingTransaction.class)
         );
         assertEquals( OK, response.getStatus() );
@@ -472,7 +472,7 @@ public class ControllerTest
         final var thrown = assertThrows(
             HttpClientResponseException.class,
             () -> client.toBlocking().exchange(
-                PUT("/accounts/"+accountId+"/transactions/"+transactionId,transaction),
+                PUT("/transactions/"+transactionId,transaction),
                 Argument.of(AccountingTransaction.class)
             )
         );
