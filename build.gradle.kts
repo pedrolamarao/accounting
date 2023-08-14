@@ -8,7 +8,7 @@ allprojects {
 
     pluginManager.withPlugin("java-base") {
         tasks.withType<JavaCompile> {
-            options.release.convention(19)
+            options.release.convention(20)
         }
     }
 }
