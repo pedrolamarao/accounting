@@ -15,10 +15,9 @@ micronaut {
 dependencies {
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
     implementation("io.micronaut.data:micronaut-data-model")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
-tasks.getByName<Test>("test") {
+tasks.test.configure {
     useJUnitPlatform()
 }
