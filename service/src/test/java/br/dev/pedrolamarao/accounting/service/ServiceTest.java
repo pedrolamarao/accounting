@@ -3,6 +3,8 @@ package br.dev.pedrolamarao.accounting.service;
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingAccountType;
 import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,9 +15,13 @@ import static java.time.LocalDate.now;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class ServiceTest
+@MicronautTest
+public class ServiceTest
 {
-    public abstract AccountingService service();
+    @Inject
+    AccountingMicronautService service;
+
+    public AccountingService service () { return service; }
 
     // accounts
 
