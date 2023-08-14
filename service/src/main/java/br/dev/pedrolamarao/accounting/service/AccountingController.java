@@ -23,16 +23,16 @@ public class AccountingController
 
     private static final Logger logger = LoggerFactory.getLogger(AccountingController.class);
 
-    public AccountingController (AccountingService accounts, HttpHostResolver hostResolver)
+    public AccountingController (AccountingService accounts)
     {
         this.accounts = accounts;
 
-        logger.info("<init>: accounts = {}, host-resolver = {}", accounts, hostResolver);
+        logger.info("<init>: accounts = {}", accounts);
     }
 
     @Post
     @Status(HttpStatus.CREATED)
-    public AccountingAccount createAccount (HttpRequest<?> request, AccountingAccount account)
+    public AccountingAccount createAccount (AccountingAccount account)
     {
         final long accountId = accounts.createAccount(account);
         return new AccountingAccount(accountId,account.type(),account.name());
@@ -45,13 +45,13 @@ public class AccountingController
     }
 
     @Get
-    public List<AccountingAccount> listAccounts (HttpRequest<?> request, @QueryValue(defaultValue="0") int page)
+    public List<AccountingAccount> listAccounts (@QueryValue(defaultValue="0") int page)
     {
         return accounts.listAccount(page);
     }
 
     @Get("/{accountId}")
-    public AccountingAccount retrieveAccount (HttpRequest<?> request, @PathVariable long accountId)
+    public AccountingAccount retrieveAccount (@PathVariable long accountId)
     {
         final var account = accounts.retrieveAccount(accountId);
         if (account == null) throw new HttpStatusException(NOT_FOUND,"");
@@ -59,7 +59,7 @@ public class AccountingController
     }
 
     @Put("/{accountId}")
-    public AccountingAccount updateAccount (HttpRequest<?> request, @PathVariable long accountId, AccountingAccount account)
+    public AccountingAccount updateAccount (@PathVariable long accountId, AccountingAccount account)
     {
         final var previous = accounts.updateAccount(accountId,account);
         if (previous == null) throw new HttpStatusException(NOT_FOUND,"");
@@ -70,7 +70,7 @@ public class AccountingController
 
     @Post("/{accountId}/transactions")
     @Status(HttpStatus.CREATED)
-    public AccountingTransaction createTransaction (HttpRequest<?> request, @PathVariable long accountId, AccountingTransaction transaction)
+    public AccountingTransaction createTransaction (@PathVariable long accountId, AccountingTransaction transaction)
     {
         if (transaction.account() != accountId) throw new RuntimeException("oops");
         final long transactionId = accounts.createTransaction(transaction);
@@ -78,26 +78,26 @@ public class AccountingController
     }
 
     @Delete("/{accountId}/transactions/{transactionId}")
-    public void deleteTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
+    public void deleteTransaction (@PathVariable long accountId, @PathVariable long transactionId)
     {
         // #TODO: validate accountId?
         accounts.deleteTransaction(transactionId);
     }
 
     @Get("/{accountId}/transactions")
-    public List<AccountingTransaction> listTransactions (HttpRequest<?> request, @PathVariable long accountId, @QueryValue(defaultValue="0") int page)
+    public List<AccountingTransaction> listTransactions (@PathVariable long accountId, @QueryValue(defaultValue="0") int page)
     {
         return accounts.listTransactions(accountId,page);
     }
 
     @Get("/{accountId}/transactions/{transactionId}")
-    public AccountingTransaction retrieveTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId)
+    public AccountingTransaction retrieveTransaction (@PathVariable long accountId, @PathVariable long transactionId)
     {
         return accounts.retrieveTransaction(transactionId);
     }
 
     @Put("/{accountId}/transactions/{transactionId}")
-    public AccountingTransaction updateTransaction (HttpRequest<?> request, @PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
+    public AccountingTransaction updateTransaction (@PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
     {
         accounts.updateTransaction(transaction);
         return transaction;
