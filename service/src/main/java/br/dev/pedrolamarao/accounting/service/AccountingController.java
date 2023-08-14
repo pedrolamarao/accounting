@@ -16,7 +16,7 @@ import java.util.List;
 
 import static io.micronaut.http.HttpStatus.NOT_FOUND;
 
-@Controller("/accounts")
+@Controller
 public class AccountingController
 {
     private final AccountingService accounts;
@@ -30,7 +30,7 @@ public class AccountingController
         logger.info("<init>: accounts = {}", accounts);
     }
 
-    @Post
+    @Post("/accounts")
     @Status(HttpStatus.CREATED)
     public AccountingAccount createAccount (AccountingAccount account)
     {
@@ -38,19 +38,19 @@ public class AccountingController
         return new AccountingAccount(accountId,account.type(),account.name());
     }
 
-    @Delete("/{accountId}")
+    @Delete("/accounts/{accountId}")
     public void deleteAccount (@PathVariable long accountId)
     {
         accounts.deleteAccount(accountId);
     }
 
-    @Get
+    @Get("/accounts")
     public List<AccountingAccount> listAccounts (@QueryValue(defaultValue="0") int page)
     {
         return accounts.listAccount(page);
     }
 
-    @Get("/{accountId}")
+    @Get("/accounts/{accountId}")
     public AccountingAccount retrieveAccount (@PathVariable long accountId)
     {
         final var account = accounts.retrieveAccount(accountId);
@@ -58,7 +58,7 @@ public class AccountingController
         return account;
     }
 
-    @Put("/{accountId}")
+    @Put("/accounts/{accountId}")
     public AccountingAccount updateAccount (@PathVariable long accountId, AccountingAccount account)
     {
         final var previous = accounts.updateAccount(accountId,account);
@@ -68,7 +68,7 @@ public class AccountingController
 
     // transactions
 
-    @Post("/{accountId}/transactions")
+    @Post("/accounts/{accountId}/transactions")
     @Status(HttpStatus.CREATED)
     public AccountingTransaction createTransaction (@PathVariable long accountId, AccountingTransaction transaction)
     {
@@ -77,26 +77,26 @@ public class AccountingController
         return new AccountingTransaction(transactionId,accountId,transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
     }
 
-    @Delete("/{accountId}/transactions/{transactionId}")
+    @Delete("/accounts/{accountId}/transactions/{transactionId}")
     public void deleteTransaction (@PathVariable long accountId, @PathVariable long transactionId)
     {
         // #TODO: validate accountId?
         accounts.deleteTransaction(transactionId);
     }
 
-    @Get("/{accountId}/transactions")
+    @Get("/accounts/{accountId}/transactions")
     public List<AccountingTransaction> listTransactions (@PathVariable long accountId, @QueryValue(defaultValue="0") int page)
     {
         return accounts.listTransactions(accountId,page);
     }
 
-    @Get("/{accountId}/transactions/{transactionId}")
+    @Get("/accounts/{accountId}/transactions/{transactionId}")
     public AccountingTransaction retrieveTransaction (@PathVariable long accountId, @PathVariable long transactionId)
     {
         return accounts.retrieveTransaction(transactionId);
     }
 
-    @Put("/{accountId}/transactions/{transactionId}")
+    @Put("/accounts/{accountId}/transactions/{transactionId}")
     public AccountingTransaction updateTransaction (@PathVariable long accountId, @PathVariable long transactionId, AccountingTransaction transaction)
     {
         accounts.updateTransaction(transaction);
