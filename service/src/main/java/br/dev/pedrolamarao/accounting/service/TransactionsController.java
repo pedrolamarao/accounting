@@ -2,62 +2,54 @@
 
 package br.dev.pedrolamarao.accounting.service;
 
-import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import br.dev.pedrolamarao.accounting.model.AccountingTransaction;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.*;
-import io.micronaut.http.exceptions.HttpStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static io.micronaut.http.HttpStatus.NOT_FOUND;
-
 @Controller("/transactions")
-public class TransactionsController
+class TransactionsController
 {
-    private final AccountingService accounts;
+    private final TransactionRepository repository;
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionsController.class);
 
-    public TransactionsController (AccountingService accounts)
+    TransactionsController (TransactionRepository repository)
     {
-        this.accounts = accounts;
-
-        logger.info("<init>: accounts = {}", accounts);
+        this.repository = repository;
     }
 
     @Post
     @Status(HttpStatus.CREATED)
     public AccountingTransaction createTransaction (AccountingTransaction transaction)
     {
-        final long transactionId = accounts.createTransaction(transaction);
-        return new AccountingTransaction(transactionId,transaction.account(),transaction.type(),transaction.date(),transaction.moneys(),transaction.description());
+        return repository.save(transaction);
     }
 
     @Delete("/{transactionId}")
     public void deleteTransaction (@PathVariable long transactionId)
     {
-        accounts.deleteTransaction(transactionId);
+        repository.deleteById(transactionId);
     }
 
     @Get
-    public List<AccountingTransaction> listTransactions (@QueryValue long account, @QueryValue(defaultValue="0") int page)
+    public Iterable<AccountingTransaction> listTransactions (@QueryValue long account, @QueryValue(defaultValue="0") int page)
     {
-        return accounts.listTransactions(account,page);
+        return repository.findAll();
     }
 
     @Get("/{transactionId}")
     public AccountingTransaction retrieveTransaction (@PathVariable long transactionId)
     {
-        return accounts.retrieveTransaction(transactionId);
+        return repository.findById(transactionId).orElseThrow();
     }
 
     @Put("/{transactionId}")
     public AccountingTransaction updateTransaction (@PathVariable long transactionId, AccountingTransaction transaction)
     {
-        accounts.updateTransaction(transaction);
-        return transaction;
+        return repository.update(transaction);
     }
 }
