@@ -3,7 +3,7 @@ plugins {
 }
 
 micronaut {
-    version.set("3.5.7")
+    version.set("3.10.0")
     testRuntime("junit5")
     processing {
         incremental(true)

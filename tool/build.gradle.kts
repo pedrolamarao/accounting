@@ -9,7 +9,7 @@ application {
 }
 
 micronaut {
-    version.set("3.5.7")
+    version.set("3.10.0")
     testRuntime("junit5")
     processing {
         incremental(true)
@@ -22,7 +22,6 @@ dependencies {
     implementation("info.picocli:picocli")
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut.picocli:micronaut-picocli")
-    runtimeOnly(libs.slf4j.simple)
 }
 
 tasks.dockerfile.configure {

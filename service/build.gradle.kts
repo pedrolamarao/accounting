@@ -8,7 +8,7 @@ application {
 }
 
 micronaut {
-    version.set("3.5.7")
+    version.set("3.10.0")
     runtime("netty")
     testRuntime("junit5")
     processing {
