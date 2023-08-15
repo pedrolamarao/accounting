@@ -128,7 +128,6 @@ public class AccountingTool
                 service.resolve( "transactions" ),
                 Files.readAllBytes(path)
             );
-            System.err.println(request);
             final var response = http.toBlocking().retrieve(request);
             System.err.println(response);
             return 0;
@@ -143,7 +142,6 @@ public class AccountingTool
                 service.resolve( "transactions/%d".formatted(id)),
                 null
             );
-            System.err.println(request);
             final var response = http.toBlocking().exchange(request);
             System.out.println(response);
             return 0;
@@ -155,7 +153,6 @@ public class AccountingTool
             final var request = HttpRequest.GET(
                 service.resolve( "transactions?account=%s".formatted(account) )
             );
-            System.err.println(request);
             final var response = http.toBlocking().retrieve(request);
             System.out.println(response);
             return 0;
@@ -169,7 +166,6 @@ public class AccountingTool
             final var request = HttpRequest.GET(
                 service.resolve( "transactions/%d".formatted(id) )
             );
-            System.err.println(request);
             final var response = http.toBlocking().retrieve(request);
             System.err.println(response);
             return 0;
@@ -186,7 +182,6 @@ public class AccountingTool
                 service.resolve("transactions/%s".formatted(id)),
                 Files.readAllBytes(path)
             );
-            System.err.println(request);
             final var json = http.toBlocking().retrieve(request);
             System.err.println(json);
             return 0;
