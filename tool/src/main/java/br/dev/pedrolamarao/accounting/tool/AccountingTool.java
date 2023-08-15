@@ -2,6 +2,7 @@ package br.dev.pedrolamarao.accounting.tool;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import jakarta.inject.Inject;
@@ -41,6 +42,7 @@ public class AccountingTool
                         service.resolve("accounts"),
                         Files.readAllBytes(path)
                     )
+                    .contentType(MediaType.APPLICATION_JSON_TYPE)
                 );
             System.err.println(json);
             return 0;
@@ -56,6 +58,7 @@ public class AccountingTool
                     service.resolve("accounts/" + id),
                     null
                 )
+                .contentType(MediaType.APPLICATION_JSON_TYPE)
             );
             System.err.println(response);
             return 0;
@@ -68,6 +71,7 @@ public class AccountingTool
                 HttpRequest.GET(
                     service.resolve("accounts")
                 )
+                .contentType(MediaType.APPLICATION_JSON_TYPE)
             );
             System.err.println(json);
             return 0;
@@ -82,6 +86,7 @@ public class AccountingTool
                 HttpRequest.GET(
                     service.resolve("accounts/" + id)
                 )
+                .contentType(MediaType.APPLICATION_JSON_TYPE)
             );
             System.err.println(json);
             return 0;
@@ -99,6 +104,7 @@ public class AccountingTool
                     service.resolve("accounts/" + id),
                     Files.readAllBytes(path)
                 )
+                .contentType(MediaType.APPLICATION_JSON_TYPE)
             );
             System.err.println(json);
             return 0;
@@ -125,9 +131,10 @@ public class AccountingTool
             throws Exception
         {
             final var request = HttpRequest.POST(
-                service.resolve( "transactions" ),
-                Files.readAllBytes(path)
-            );
+                    service.resolve( "transactions" ),
+                    Files.readAllBytes(path)
+                )
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var response = http.toBlocking().retrieve(request);
             System.err.println(response);
             return 0;
@@ -139,9 +146,10 @@ public class AccountingTool
         )
         {
             final var request = HttpRequest.DELETE(
-                service.resolve( "transactions/%d".formatted(id)),
-                null
-            );
+                    service.resolve( "transactions/%d".formatted(id)),
+                    null
+                )
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var response = http.toBlocking().exchange(request);
             System.out.println(response);
             return 0;
@@ -151,8 +159,9 @@ public class AccountingTool
         public int list ()
         {
             final var request = HttpRequest.GET(
-                service.resolve( "transactions?account=%s".formatted(account) )
-            );
+                    service.resolve( "transactions?account=%s".formatted(account) )
+                )
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var response = http.toBlocking().retrieve(request);
             System.out.println(response);
             return 0;
@@ -164,8 +173,9 @@ public class AccountingTool
         )
         {
             final var request = HttpRequest.GET(
-                service.resolve( "transactions/%d".formatted(id) )
-            );
+                    service.resolve( "transactions/%d".formatted(id) )
+                )
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var response = http.toBlocking().retrieve(request);
             System.err.println(response);
             return 0;
@@ -179,9 +189,10 @@ public class AccountingTool
             throws Exception
         {
             final var request = HttpRequest.PUT(
-                service.resolve("transactions/%s".formatted(id)),
-                Files.readAllBytes(path)
-            );
+                    service.resolve("transactions/%s".formatted(id)),
+                    Files.readAllBytes(path)
+                )
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var json = http.toBlocking().retrieve(request);
             System.err.println(json);
             return 0;

@@ -4,6 +4,7 @@ package br.dev.pedrolamarao.accounting.service;
 
 import br.dev.pedrolamarao.accounting.model.AccountingAccount;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,33 +23,38 @@ class AccountsController
         this.repository = repository;
     }
 
+    @Consumes(MediaType.APPLICATION_JSON)
     @Post
     @Status(HttpStatus.CREATED)
-    public List<AccountingAccount> createAccount (List<AccountingAccount> accounts)
+    public List<AccountingAccount> createAccount (@Body List<AccountingAccount> accounts)
     {
          return accounts.stream().map(repository::save).toList();
     }
 
+    @Consumes(MediaType.APPLICATION_JSON)
     @Delete("/{accountId}")
     public void deleteAccount (@PathVariable long accountId)
     {
         repository.deleteById(accountId);
     }
 
+    @Consumes(MediaType.APPLICATION_JSON)
     @Get
     public Iterable<AccountingAccount> listAccounts ()
     {
         return repository.findAll();
     }
 
+    @Consumes(MediaType.APPLICATION_JSON)
     @Get("/{accountId}")
     public AccountingAccount retrieveAccount (@PathVariable long accountId)
     {
         return repository.findById(accountId).orElseThrow();
     }
 
+    @Consumes(MediaType.APPLICATION_JSON)
     @Put("/{accountId}")
-    public AccountingAccount updateAccount (@PathVariable long accountId, AccountingAccount account)
+    public AccountingAccount updateAccount (@PathVariable long accountId, @Body AccountingAccount account)
     {
         assert account.id() == accountId;
         return repository.update(account);
