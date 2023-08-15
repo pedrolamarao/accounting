@@ -24,9 +24,9 @@ class TransactionsController
 
     @Post
     @Status(HttpStatus.CREATED)
-    public AccountingTransaction createTransaction (AccountingTransaction transaction)
+    public List<AccountingTransaction> createTransaction (List<AccountingTransaction> transactions)
     {
-        return repository.save(transaction);
+        return transactions.stream().map(repository::save).toList();
     }
 
     @Delete("/{transactionId}")
@@ -36,7 +36,7 @@ class TransactionsController
     }
 
     @Get
-    public Iterable<AccountingTransaction> listTransactions (@QueryValue long account, @QueryValue(defaultValue="0") int page)
+    public Iterable<AccountingTransaction> listTransactions (@QueryValue long account)
     {
         return repository.findAll();
     }
@@ -50,6 +50,7 @@ class TransactionsController
     @Put("/{transactionId}")
     public AccountingTransaction updateTransaction (@PathVariable long transactionId, AccountingTransaction transaction)
     {
+        assert transaction.id() == transactionId;
         return repository.update(transaction);
     }
 }

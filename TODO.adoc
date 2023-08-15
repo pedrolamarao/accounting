@@ -2,63 +2,17 @@
 :author: Pedro Lamarão <pedro.lamarao@gmail.com>
 :icons: font
 
-* [x] accounts
-* [x] transactions
-* [x] Micronaut Data service provider
-* [ ] problem report (account nonexistent, transaction nonexistent etc.)
-* [ ] accounts : paging
-* [ ] transactions : paging
-* [ ] statements (service, controller)
-* [ ] statements : import from CSV
-* [ ] statements : import from OFX
-* [ ] reconciliation (service, controller)
-* [ ] tool account (create, delete, get, list, update)
-* [ ] tool account transaction (create, delete, get, list, update)
-* [ ] tool account reconciliation (create, delete, get, list, update)
-* [ ] tool account statement (create, delete, get, list, update)
+* [x] M0: transactions
+* [ ] M1: OFX
+* [ ] M2: CSV
 
-== service tests
+== M1
 
-* [x] accounts
-* [x] transactions
+* [ ] import transactions from OFX
+* [ ] summarize transactions
 
-=== list accounts
+== M2
 
-* [ ] create account > list accounts : range
-* [ ] create account > list accounts : underflow
-* [ ] create account > list accounts : overflow
-
-=== list transactions
-
-* [ ] create account > list transactions : range
-* [ ] create account > list transactions : underflow
-* [ ] create account > list transactions : overflow
-
-== controller tests
-
-* [x] accounts
-* [x] transactions
-
-=== problem reports
-
-* [ ] delete account : nonexistent account
-* [ ] update account : nonexistent account
-* [ ] create transaction : nonexistent account
-* [ ] delete transaction : nonexistent account
-* [ ] get transaction : nonexistent account
-* [ ] get transaction : nonexistent transaction
-* [ ] list transactions : nonexistent account
-* [ ] update transaction : nonexistent account
-* [ ] update transaction : nonexistent transaction
-
-=== list accounts
-
-* [ ] list accounts : range
-* [ ] list accounts : underflow
-* [ ] list accounts : overflow
-
-=== list transactions
-
-* [ ] list transactions : range
-* [ ] list transactions : underflow
-* [ ] list transactions : overflow
+* [ ] import transactions from CSV
+* [ ] get transactions by date range
+* [ ] summarize transactions by date range

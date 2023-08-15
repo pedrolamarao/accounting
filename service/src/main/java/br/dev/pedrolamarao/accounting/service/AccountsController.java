@@ -8,6 +8,8 @@ import io.micronaut.http.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 @Controller("/accounts")
 class AccountsController
 {
@@ -22,9 +24,9 @@ class AccountsController
 
     @Post
     @Status(HttpStatus.CREATED)
-    public AccountingAccount createAccount (AccountingAccount account)
+    public List<AccountingAccount> createAccount (List<AccountingAccount> accounts)
     {
-        return repository.save(account);
+         return accounts.stream().map(repository::save).toList();
     }
 
     @Delete("/{accountId}")
@@ -48,6 +50,7 @@ class AccountsController
     @Put("/{accountId}")
     public AccountingAccount updateAccount (@PathVariable long accountId, AccountingAccount account)
     {
+        assert account.id() == accountId;
         return repository.update(account);
     }
 }
