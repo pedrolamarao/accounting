@@ -1,6 +1,7 @@
 package br.dev.pedrolamarao.accounting.tool;
 
 import io.micronaut.configuration.picocli.PicocliRunner;
+import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
@@ -9,6 +10,7 @@ import jakarta.inject.Inject;
 import picocli.CommandLine;
 
 import java.net.URI;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -137,6 +139,23 @@ public class AccountingTool
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
             final var response = http.toBlocking().retrieve(request);
             System.err.println(response);
+            return 0;
+        }
+
+        @CommandLine.Command(name="create-from-csv")
+        public int createFromCsv (
+            @CommandLine.Option(names="--file",required=true) Path path
+        )
+            throws Exception
+        {
+            final var result = java.net.http.HttpClient.newHttpClient().send(
+                java.net.http.HttpRequest.newBuilder(service.resolve("transactions"))
+                    .POST( java.net.http.HttpRequest.BodyPublishers.ofFile(path) )
+                    .header("Content-Type","text/csv")
+                    .build(),
+                HttpResponse.BodyHandlers.ofString()
+            );
+            System.err.println(result.body());
             return 0;
         }
 
