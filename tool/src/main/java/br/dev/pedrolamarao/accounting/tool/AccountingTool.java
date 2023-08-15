@@ -38,7 +38,7 @@ public class AccountingTool
         {
             final var json = http.toBlocking().retrieve(
                     HttpRequest.POST(
-                        service.resolve("/accounts"),
+                        service.resolve("accounts"),
                         Files.readAllBytes(path)
                     )
                 );
@@ -53,7 +53,7 @@ public class AccountingTool
         {
             final var response = http.toBlocking().exchange(
                 HttpRequest.DELETE(
-                    service.resolve("/accounts/" + id),
+                    service.resolve("accounts/" + id),
                     null
                 )
             );
@@ -66,7 +66,7 @@ public class AccountingTool
         {
             final var json = http.toBlocking().retrieve(
                 HttpRequest.GET(
-                    service.resolve("/accounts")
+                    service.resolve("accounts")
                 )
             );
             System.err.println(json);
@@ -80,7 +80,7 @@ public class AccountingTool
         {
             final var json = http.toBlocking().retrieve(
                 HttpRequest.GET(
-                    service.resolve("/accounts/" + id)
+                    service.resolve("accounts/" + id)
                 )
             );
             System.err.println(json);
@@ -96,7 +96,7 @@ public class AccountingTool
         {
             final var json = http.toBlocking().retrieve(
                 HttpRequest.PUT(
-                    service.resolve("/accounts/" + id),
+                    service.resolve("accounts/" + id),
                     Files.readAllBytes(path)
                 )
             );
@@ -125,7 +125,7 @@ public class AccountingTool
             throws Exception
         {
             final var request = HttpRequest.POST(
-                service.resolve( "accounts/%d/transactions".formatted(account) ),
+                service.resolve( "transactions" ),
                 Files.readAllBytes(path)
             );
             System.err.println(request);
@@ -140,7 +140,7 @@ public class AccountingTool
         )
         {
             final var request = HttpRequest.DELETE(
-                service.resolve( "accounts/%d/transactions/%d".formatted(account,id)),
+                service.resolve( "transactions/%d".formatted(id)),
                 null
             );
             System.err.println(request);
@@ -153,7 +153,7 @@ public class AccountingTool
         public int list ()
         {
             final var request = HttpRequest.GET(
-                service.resolve( "/accounts/%d/transactions".formatted(account) )
+                service.resolve( "transactions?account=%s".formatted(account) )
             );
             System.err.println(request);
             final var response = http.toBlocking().retrieve(request);
@@ -167,7 +167,7 @@ public class AccountingTool
         )
         {
             final var request = HttpRequest.GET(
-                service.resolve( "accounts/%d/transactions/%d".formatted(account,id) )
+                service.resolve( "transactions/%d".formatted(id) )
             );
             System.err.println(request);
             final var response = http.toBlocking().retrieve(request);
@@ -183,7 +183,7 @@ public class AccountingTool
             throws Exception
         {
             final var request = HttpRequest.PUT(
-                service.resolve("accounts").resolve(""+account).resolve("transactions").resolve(""+id),
+                service.resolve("transactions/%s".formatted(id)),
                 Files.readAllBytes(path)
             );
             System.err.println(request);
